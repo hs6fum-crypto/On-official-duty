@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ระบบขออนุญาตไปราชการ — โรงพยาบาลพรหมพิราม</title>
+<base target="_top">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff; --bg:#EEF2F4; --ink:#1B2530; --ink-2:#4B5A68; --ink-3:#8593A0;
+  --line:#D5DDE3; --line-soft:#E6ECF0;
+  --brand:#0E5F6E; --brand-soft:#DCEEF1; --brand-ink:#0A4651;
+  --amber:#9A6700; --amber-soft:#FBF0D5;
+  --green:#22693F; --green-soft:#DDF2E3;
+  --red:#A23838; --red-soft:#F8DEDE;
+  --grey:#5B6772; --grey-soft:#E8ECEF;
+  --focus:#0E5F6E; --on-brand:#ffffff;
+  --radius:6px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1B222A; --bg:#0F1419; --ink:#E8EDF1; --ink-2:#B4BFC9; --ink-3:#7E8A95;
+    --line:#333E48; --line-soft:#283239;
+    --brand:#4EB3C2; --brand-soft:#173840; --brand-ink:#8FD6E0;
+    --amber:#E3B24A; --amber-soft:#3A2E12;
+    --green:#5FC47F; --green-soft:#16321F;
+    --red:#EE8A8A; --red-soft:#3D1C1C;
+    --grey:#AAB4BD; --grey-soft:#2A333B;
+    --focus:#4EB3C2; --on-brand:#0B1518;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1B222A; --bg:#0F1419; --ink:#E8EDF1; --ink-2:#B4BFC9; --ink-3:#7E8A95;
+  --line:#333E48; --line-soft:#283239;
+  --brand:#4EB3C2; --brand-soft:#173840; --brand-ink:#8FD6E0;
+  --amber:#E3B24A; --amber-soft:#3A2E12;
+  --green:#5FC47F; --green-soft:#16321F;
+  --red:#EE8A8A; --red-soft:#3D1C1C;
+  --grey:#AAB4BD; --grey-soft:#2A333B;
+  --focus:#4EB3C2; --on-brand:#0B1518;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"Sarabun","TH Sarabun New",Tahoma,system-ui,sans-serif;font-size:16px;line-height:1.55;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.hidden{display:none!important}
+
+ 
+.topbar{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar-in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;flex:1;min-width:240px}
+.brand-mark{width:38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;letter-spacing:.5px}
+.brand h1{font-size:17px;font-weight:600;margin:0;line-height:1.2}
+.brand small{display:block;color:var(--ink-2);font-weight:400;font-size:13px}
+.sync{font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--ink-3);display:inline-block}
+.sync.on i{background:var(--green)}
+.sync.local i{background:var(--amber)}
+
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 14px;border-radius:var(--radius);font-weight:500;font-size:15px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.btn.primary:hover{background:var(--brand-ink);border-color:var(--brand-ink)}
+.btn.danger{color:var(--red);border-color:var(--red)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn.quiet:hover{background:var(--grey-soft)}
+.btn.sm{padding:5px 10px;font-size:14px}
+
+main{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+
+ 
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;border-left:4px solid var(--grey);cursor:pointer;text-align:left}
+.stat.active{box-shadow:0 0 0 2px var(--brand) inset}
+.stat .n{font-size:30px;font-weight:600;line-height:1.1}
+.stat .l{color:var(--ink-2);font-size:14px;margin-top:2px}
+.stat.s-all{border-left-color:var(--brand)}
+.stat.s-draft{border-left-color:var(--grey)}
+.stat.s-pending{border-left-color:var(--amber)}
+.stat.s-approved{border-left-color:var(--green)}
+.stat.s-rejected{border-left-color:var(--red)}
+.stat.s-money{border-left-color:var(--brand);cursor:default}
+.stat.s-money .n{font-size:24px}
+
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.toolbar input[type=search]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+.toolbar select{padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+
+.table-wrap{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto}
+table.list{width:100%;border-collapse:collapse;min-width:760px}
+table.list th{text-align:left;font-weight:600;font-size:14px;color:var(--ink-2);padding:11px 14px;border-bottom:1px solid var(--line);background:var(--bg)}
+table.list td{padding:12px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+table.list tr:last-child td{border-bottom:none}
+table.list tbody tr{cursor:pointer}
+table.list tbody tr:hover td{background:var(--brand-soft)}
+td.title{max-width:380px}
+td.title .t{font-weight:500}
+td.title .s{color:var(--ink-2);font-size:14px}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:500;white-space:nowrap}
+.pill.draft{background:var(--grey-soft);color:var(--grey)}
+.pill.pending{background:var(--amber-soft);color:var(--amber)}
+.pill.approved{background:var(--green-soft);color:var(--green)}
+.pill.rejected{background:var(--red-soft);color:var(--red)}
+.empty{padding:56px 20px;text-align:center;color:var(--ink-2)}
+.empty p{margin:0 0 14px}
+
+ 
+.editor-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.editor-head .grow{flex:1}
+.editor-head .status-line{color:var(--ink-2);font-size:14px}
+.saved-note{font-size:14px;color:var(--green);min-width:90px}
+
+.editor-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+@media (max-width:960px){.editor-grid{grid-template-columns:1fr}}
+
+.side{position:sticky;top:78px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.card h3{margin:0 0 10px;font-size:15px;font-weight:600}
+.card .row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line-soft);font-size:14px}
+.card .row:last-child{border-bottom:none}
+.card .row b{font-weight:600;font-variant-numeric:tabular-nums}
+.card .row.total{font-size:15px}
+.choice{display:flex;gap:8px;flex-wrap:wrap}
+.choice label{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.choice label:has(input:checked){background:var(--brand-soft);border-color:var(--brand);color:var(--brand-ink)}
+.choice input{margin:0;accent-color:var(--brand)}
+.help{font-size:13px;color:var(--ink-3);margin:8px 0 0}
+
+ 
+.paper{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:38px 46px 34px;color:var(--ink);position:relative;box-shadow:0 1px 0 var(--line-soft)}
+@media (max-width:640px){.paper{padding:22px 16px}}
+.paper .garuda{width:48px;height:auto;margin-bottom:6px;display:block}
+:root:not([data-theme="light"]) .paper .garuda{filter:invert(1) brightness(1.1)}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .paper .garuda{filter:none}}
+:root[data-theme="light"] .paper .garuda{filter:none}
+
+ 
+.pv-overlay{position:fixed;inset:0;background:rgba(20,30,40,.72);z-index:40;display:flex;flex-direction:column}
+.pv-bar{background:var(--paper);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;gap:10px;align-items:center}
+.pv-bar .grow{flex:1}
+.pv-scroll{overflow:auto;flex:1;padding:24px 12px}
+.a4{width:210mm;height:297mm;max-width:210mm;overflow:hidden;box-sizing:border-box;margin:0 auto;background:#fff;color:#000;padding:8mm 12mm 8mm 14mm;box-shadow:0 8px 30px rgba(0,0,0,.35);font-family:"Sarabun","TH Sarabun New",Tahoma,sans-serif;font-size:13px;line-height:1.5}
+.a4-inner{transform-origin:top left;overflow-wrap:anywhere}
+@media screen and (max-width:800px){.a4{width:100%;height:auto;padding:16px}}
+.a4 .m-garuda{width:44px;display:block}
+.a4 h2{text-align:center;font-size:22px;font-weight:700;margin:-38px 0 6px}
+.a4 .m-hdr{display:grid;grid-template-columns:1fr 1fr;gap:2px 20px}
+.a4 .m-rule{border:0;border-top:1px dashed #000;margin:4px 0 6px}
+.a4 p{margin:0 0 1px}
+.a4 .m-ind{text-indent:2.5em}
+.a4 .m-sub{padding-left:1.5em}
+.a4 .m-pre{white-space:pre-wrap;margin:0 0 2px}
+.a4 u.v{text-decoration:none;border-bottom:1px dotted #000;padding:0 4px;min-width:48px;display:inline-block;line-height:1.3;max-width:100%;outline:none;cursor:text;white-space:pre-wrap}
+.a4 u.v:not(:empty){border-bottom-color:transparent}
+.a4 u.v:empty::after{content:"\00a0";}
+.a4 .m-box{display:inline-block;width:12px;height:12px;border:1.2px solid #000;vertical-align:-1px;margin-right:6px;text-align:center;line-height:10px;font-size:11px}
+.a4 ol{margin:0 0 2px 2.5em;padding:0}
+.a4 .m-sign{text-align:center;margin:18px 0 4px}
+.a4 .m-sign div{display:inline-block;text-align:center;line-height:1.7}
+.a4 .m-op{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:10px;width:100%}
+.a4 .m-op > div{border:1.5px solid #000;padding:8px 10px;font-size:11.5px;line-height:1.55;min-width:0;max-width:100%;overflow:hidden;box-sizing:border-box}
+.a4 .m-op h4{margin:0 0 3px;text-align:center;text-decoration:underline;font-size:11.5px;font-weight:600;white-space:normal}
+.a4 .m-op .ln{display:flex;align-items:baseline;gap:4px;white-space:nowrap;min-height:1.55em;min-width:0;max-width:100%}
+.a4 .m-op .ln > span{display:inline-flex;align-items:baseline}
+.a4 .m-op u.v.g{flex:1 1 0;min-width:24px;width:0;padding:0 3px;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.a4 .m-op .m-box{width:10px;height:10px;line-height:8px;font-size:9px;flex:none;margin-right:4px}
+.a4 .m-center{text-align:center}
+body.pv-print .topbar,body.pv-print main,body.pv-print .toast{display:none!important}
+
+@media print{.paper .garuda{filter:none!important}}
+.paper h2{text-align:center;font-size:26px;margin:-38px 0 14px;font-weight:700;letter-spacing:.5px}
+@media (max-width:640px){.paper h2{margin-top:0}}
+.hdr{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:16px;margin-bottom:6px}
+@media (max-width:640px){.hdr{grid-template-columns:1fr}}
+.hdr b,.p b{font-weight:600}
+.rule{border:none;border-top:1px dashed var(--ink-3);margin:8px 0 14px}
+.p{margin:0 0 6px;line-height:2}
+.p.indent{text-indent:2.5em}
+.p.sub{padding-left:1.5em}
+
+ 
+.f{display:inline-block;border:none;border-bottom:1px dotted var(--ink-2);background:transparent;padding:0 6px;min-width:40px;line-height:1.5;border-radius:0;font-weight:500;color:var(--brand-ink);vertical-align:baseline;margin:0 2px}
+.f:focus{border-bottom-style:solid;border-bottom-color:var(--brand);outline:none;background:var(--brand-soft)}
+.f::placeholder{color:var(--ink-3);font-weight:300}
+.f.xs{width:70px;text-align:right}
+.f.s{width:120px}
+.f.m{width:200px}
+.f.l{width:300px}
+.f.xl{width:min(100%,520px)}
+.f.full{display:block;width:100%;margin:2px 0 6px}
+textarea.f{display:block;width:100%;resize:vertical;min-height:58px;line-height:1.7;border:1px dotted var(--ink-2);padding:6px 10px;margin:4px 0 8px}
+.f[type=time]{width:auto;font-variant-numeric:tabular-nums}
+.dt{position:relative;display:inline-block;margin:0 2px;vertical-align:baseline}
+.dt input[type=date]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;padding:0;border:0}
+.dt .dt-text{display:inline-block;border-bottom:1px dotted var(--ink-2);padding:0 8px;min-width:150px;font-weight:500;color:var(--brand-ink);line-height:1.5;text-align:center}
+.dt .dt-text.empty{color:var(--ink-3);font-weight:300}
+.dt:has(input:focus-visible) .dt-text{border-bottom-style:solid;border-bottom-color:var(--brand);background:var(--brand-soft)}
+.chk{display:inline-flex;align-items:center;gap:8px;margin-right:6px}
+.chk input{width:17px;height:17px;accent-color:var(--brand);margin:0}
+.opt{opacity:.55;transition:opacity .15s}
+.opt.on{opacity:1}
+.opt.on .chk{font-weight:600}
+
+.persons{margin:0 0 6px;padding-left:0;list-style:none}
+.persons li{display:flex;align-items:baseline;gap:8px;line-height:2;flex-wrap:wrap}
+.persons li .idx{width:1.5em;text-align:right}
+.persons .rm{border:none;background:none;color:var(--ink-3);font-size:18px;line-height:1;padding:0 4px}
+.persons .rm:hover{color:var(--red)}
+.add-person{border:none;background:none;color:var(--brand);font-weight:500;padding:0;text-decoration:underline dotted;margin-left:2.5em}
+
+.sign{margin-top:14px;display:flex;flex-direction:column;align-items:flex-end;gap:2px;line-height:1.9}
+.sign .bracket{display:inline-flex;align-items:baseline;gap:4px}
+
+.opinions{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+@media (max-width:700px){.opinions{grid-template-columns:1fr}}
+.opinion{border:1.5px solid var(--ink);padding:14px 16px;font-size:15px;line-height:1.9}
+.opinion h4{margin:0 0 6px;font-size:15px;font-weight:600;text-align:center;text-decoration:underline}
+.opinion .decision{display:flex;gap:18px;justify-content:center;margin:4px 0 8px}
+.opinion .decision label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:500;padding:3px 12px;border-radius:4px}
+.opinion .decision input{width:18px;height:18px;margin:0;accent-color:var(--brand)}
+.opinion .decision label.ok:has(input:checked){background:var(--green-soft);color:var(--green)}
+.opinion .decision label.no:has(input:checked){background:var(--red-soft);color:var(--red)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:var(--radius);font-size:14px;opacity:0;pointer-events:none;transition:all .2s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media print{
+  body{background:#fff;color:#000;font-size:14px}
+  .topbar,.editor-head,.side,.toast,.no-print{display:none!important}
+  main{padding:0;max-width:none}
+  .editor-grid{display:block}
+  .paper{border:none;box-shadow:none;padding:0;color:#000}
+  .f{color:#000;border-bottom-color:#000;background:transparent!important}
+  .f::placeholder{color:transparent}
+  .dt .dt-text.empty{color:transparent}
+  .dt .dt-text{color:#000;border-bottom-color:#000}
+  .opt{opacity:1}
+  .add-person,.persons .rm{display:none}
+  .opinion{border-color:#000}
+  @page{size:A4 portrait;margin:0}
+  html,body{width:210mm;min-height:297mm;margin:0!important;padding:0!important}
+  body.pv-print .pv-overlay{position:static;background:none;display:block}
+  body.pv-print .pv-bar{display:none}
+  body.pv-print .pv-scroll{padding:0;overflow:visible}
+  body.pv-print .a4{width:210mm;height:297mm;max-width:210mm;box-shadow:none;margin:0!important;padding:8mm 12mm 8mm 14mm;page-break-after:avoid;break-after:avoid}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="brand-mark">รพ.</div>
+      <h1>ระบบขออนุญาตไปราชการ<small>โรงพยาบาลพรหมพิราม · กลุ่มงานยุทธศาสตร์</small></h1>
+    </div>
+    <div class="sync" id="syncState"><i></i><span>กำลังเชื่อมต่อ…</span></div>
+    <button class="btn" id="btnHome">รายการทั้งหมด</button>
+    <button class="btn primary" id="btnNew">+ สร้างบันทึกใหม่</button>
+  </div>
+</header>
+
+<main>
+  
+  <section id="viewDash">
+    <div class="stats" id="stats"></div>
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="ค้นหา ชื่อผู้ขอ, เรื่อง, หน่วยงานผู้จัด, สถานที่…">
+      <select id="fy"><option value="">ทุกปีงบประมาณ</option></select>
+      <button class="btn" id="btnExport" title="ส่งออกรายการทั้งหมดเป็นไฟล์ เพื่อสำรองหรือย้ายไปเครื่องอื่น">ส่งออกข้อมูล</button>
+      <button class="btn" id="btnImport">นำเข้าข้อมูล</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden">
+      <select id="sortBy">
+        <option value="updated">เรียงตามแก้ไขล่าสุด</option>
+        <option value="travel">เรียงตามวันเดินทาง</option>
+        <option value="doc">เรียงตามวันที่หนังสือ</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="list">
+        <thead><tr>
+          <th style="width:110px">วันที่หนังสือ</th>
+          <th>เรื่อง / ผู้ขอ</th>
+          <th style="width:190px">วันเดินทาง</th>
+          <th style="width:120px;text-align:right">ค่าใช้จ่าย (บาท)</th>
+          <th style="width:120px">สถานะ</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty hidden" id="emptyState"><p>ยังไม่มีบันทึกขออนุญาตไปราชการ</p><button class="btn primary" onclick="newRequest()">สร้างบันทึกแรก</button></div>
+    </div>
+  </section>
+
+  
+  <section id="viewEdit" class="hidden">
+    <div class="editor-head">
+      <button class="btn quiet" id="btnBack">‹ กลับรายการ</button>
+      <div class="grow status-line" id="editMeta"></div>
+      <span class="saved-note" id="savedNote"></span>
+      <button class="btn" id="btnExample" title="เติมข้อมูลจากไฟล์ตัวอย่างที่แนบมา">เติมตัวอย่าง</button>
+      <button class="btn" id="btnPrint">ดูตัวอย่าง / พิมพ์</button>
+      <button class="btn danger" id="btnDelete">ลบ</button>
+      <button class="btn primary" id="btnSave">บันทึก</button>
+    </div>
+
+    <div class="editor-grid">
+      <article class="paper" id="paper">
+        <img class="garuda" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACrAQMAAACg4sdhAAAABlBMVEUAAAD///&#43;l2Z/dAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAOxAAADsQBlSsOGwAABhNJREFUSIlt189rHGUYB/Dvu7PsTGHJbFsPS7tktlXbo1sXJKUhs7VFL4L/wgaxvQgmFDRCyLxrSpNDJfUWUNij1/Qu&#43;K4pVKWoR3vqxEhFEJw00E7sOK/P887MZneThexkPnl/Pu/7Pm8LPfn5U0PvTtg2mTVhisyesEgjdSctQDJpsYeDI&#43;Ziz5uwxMX&#43;MfbsGHt&#43;xC7i6RF7FQ&#43;OsduFvSjsDcjCdo&#43;x7cLOHbX4HO64k/YhLpDJwhIEOv4Ib5KB6//IZeCztV36K9d/TD8R/TW6jvbHSQyO9Sb9hLC96CraF5NmqbC4Dve5QttOUPZy01W4fyjct2I0A3pt8JeEqyS2eklohjbNtrc627uNrcG3O2tsc2zxw2VRxVZnbt41Q&#43;PvJFg&#43;5eBed27FH1rqz14AamOm/dmKg3p3OgkO7Ts2p1ZNtJnW&#43;/zob1ZruNvIbL9&#43;05icaeFOFf/xy7P6xdy6WMssRd1ErC&#43;b81iriMxQ2A7WShg3DNCTOKDf/12AidgdCAEZQvDwcpOwybqAGR6QWYVsAbRYNI3MgCrZbIsWSx/QWN41XdXJGhixBJghmzIWUl3L2IKAss3A8j7IOhaUAEcpwlts3JWFMCuQlzNNIMoaegnJfZgSxgSbKfeAHq6xFo/FNOuGxsqwaUFiONy9H6FJVoKdejqusqVBhA6ZoC48MwiPljyE5Pak0BvGntAZV9zeAXe7reMSmh49JRsX0KEfV863vNTSsokN0AzhR7ZpL3RTdOAhvS6knwqyZj/0qUQ3gP6ATCOWZGCTZGYCyD5&#43;DEGiZatuDy1C1dgsCpM&#43;x4WMRilSoTg8yucXsu/pLbXCnlarO77MbEDPFSuWWq7t&#43;Mgs7ADTFn9b4SxQtsiezoiQrIWSFc7QUn7KeXLDlGthik2EnDt3aGdRkTIci0ZS4gnoWC0pWKmNrsejQ58s6eATMsuYw9EGbwfqkr&#43;9LpCbyzabmxVRkHRqqxKsBtWf7qKmFZtu8sb2nlObNO60HLDBpv68SK7yeYBj7KHktvYe7yY0OixqY6HpbWBG0Jw3tlMYrx1WjUVdsyT7ZJ3ItzObcwfSpAlnXm&#43;5mSFQsH/J9i8yS7iu9U&#43;2cT3fWDoHOmRUV1EEOPPw&#43;bN5gK6kIdfM2WMbRMv5mtt/803EFvo/oFtoYTj8FJYIXTbgoOnnpq2oxsT7QxfGO4LWSZlTlhtNXkSwFbI8ZixhG&#43;yOGQfpxa4eqxtljatyfTA09aDOc5KNmjzs951pM8/ZGj8yQ2kKnlxBI8t3bGmJbKrRwN2TlzeKud0olVGZprR06bKbWwwrn&#43;/5YQzo8HxjzgKtYGERxCrHS4TdcmE7Eqtc7kSocK2w9fWBqfvXbQxjj/WmogMpBusjRlmHygVZSjK2exIn9T1U9Gu4sVjYfdTJkFQr3Uu5/S42y7ufA5GDkfactfbPjapaGDVYm6nj0iErW8N5SKFozwuJ927mttf7TcWUWm1KOBdzO5B1uYQ2pkf2hslLuALqojrcL2XF58xVTueLfmHX6d5cClyJTm&#43;4HiA7EZhYD/eVCXzQHLOeMQlHiOGah2FmODG&#43;X0paOqP7ihpslLRykb/prOBMWdNN4o1YgiVKepbptTDdi/BCWeFoOW2ZNY/GjPc3sDxqqTmGWHa1CjJTvslFKM1Rss0shR1Pm6TliuiV7Jynfi&#43;cq3OMXQVdWIQltoqlRJwbls0tR7sorKIw94kSdDJFPBfN5Naw9Zois2IvWsnN/SlY5bVzI6&#43;XFPZrsJ/gNOw9OoZFewj2zYW6R1tnaLrNd6PYW6XAZiZSWHw7oAU39rL5uomgf7QAbyO729mqtKNqJjCUtXODueRMFOLCRJY1zUlIc3Oz7FQyWSGP6YaWRboKDmO/Sa9nKDeJEbtHcTpTrsEaM4fKYcw2z8WVs8BSZdRelw5ZVY6YbAFklhqxcHGd7VJ/dB&#43;06&#43;Urk0Z1rwBj&#43;0/Leap76ks9ZotkpzfGLO1ePdu0&#43;uO2cO2rpW1/3GZu9j&#43;bMI1b/cVsxIembn29uKnHTVuPFvxJW3uUBJNG/4/RR2znGNs7xvaPsZfD3/4HZCpGA9pwo&#43;YAAAAASUVORK5CYII=" alt="ตราครุฑ">
+        <h2>บันทึกข้อความ</h2>
+
+        <div class="hdr">
+          <div><b>ส่วนราชการ</b> <input class="f m" data-k="agency" placeholder="โรงพยาบาลพรหมพิราม"></div>
+          <div><b>กลุ่มงาน</b> <input class="f m" data-k="dept" placeholder="ยุทธศาสตร์"></div>
+          <div><b>ที่</b> <input class="f s" data-k="docNo" placeholder="พล ๐๕๓๓.๓๐๑"> / <input class="f s" data-k="docNoSuffix" placeholder="เลขที่ / พิเศษ"></div>
+          <div><b>วันที่</b> <span class="dt"><input type="date" data-k="docDate"><span class="dt-text">เลือกวันที่</span></span></div>
+          <div style="grid-column:1/-1"><b>เรื่อง</b> <input class="f l" data-k="subject" placeholder="ขออนุญาตไปราชการ"></div>
+        </div>
+        <hr class="rule">
+
+        <p class="p"><b>เรียน</b> <input class="f l" data-k="to" placeholder="ผู้อำนวยการโรงพยาบาลพรหมพิราม"></p>
+
+        <p class="p indent">ข้าพเจ้า <input class="f m" data-k="reqName" placeholder="ชื่อ-สกุล ผู้ขอ"> ตำแหน่ง <input class="f m" data-k="reqPos" placeholder="ตำแหน่ง">
+          มีความประสงค์ขออนุญาตไปราชการ เพื่อเข้ารับการ
+          <select class="f" data-k="kind"><option value="">อบรม / ประชุม / สัมมนา</option><option>อบรม</option><option>ประชุม</option><option>สัมมนา</option><option>อบรม/ประชุม</option><option>นิเทศงาน</option></select>
+          เรื่อง</p>
+        <textarea class="f" data-k="topic" rows="2" placeholder="ชื่อเรื่องการอบรม/ประชุม/สัมมนา"></textarea>
+
+        <p class="p">หน่วยงานผู้จัด <input class="f l" data-k="organizer" placeholder="เช่น สำนักงานสาธารณสุขจังหวัดพิษณุโลก"> สถานที่ <input class="f l" data-k="venue" placeholder="สถานที่จัด"></p>
+        <p class="p">ระหว่างวันที่ <span class="dt"><input type="date" data-k="dateFrom"><span class="dt-text">เลือกวันที่</span></span> ถึงวันที่ <span class="dt"><input type="date" data-k="dateTo"><span class="dt-text">เลือกวันที่</span></span> วัตถุประสงค์ของการสมัครเข้ารับการอบรมเพื่อ</p>
+        <textarea class="f" data-k="purpose" rows="3" placeholder="1. เพื่อ…&#10;2. เพื่อ…"></textarea>
+
+        <p class="p indent">ทั้งนี้ มีผู้เข้าร่วมประชุมกับข้าพเจ้าด้วย ดังนี้</p>
+        <ul class="persons" id="persons"></ul>
+        <button class="add-person no-print" id="addPerson">+ เพิ่มผู้ร่วมเดินทาง</button>
+
+        <p class="p" style="margin-top:10px">ในการไปราชการครั้งนี้ ขออนุญาต</p>
+
+        <div class="opt" data-opt="hosp">
+          <p class="p sub"><label class="chk"><input type="checkbox" data-k="useHosp"> เบิกค่าใช้จ่ายต่างๆ จากเงินบำรุงโรงพยาบาล</label>
+            (ค่าลงทะเบียน <input class="f xs" type="number" min="0" data-k="feeReg" placeholder="0"> บาท / ค่าที่พัก <input class="f xs" type="number" min="0" data-k="feeStay" placeholder="0"> บาท / ค่าเบี้ยเลี้ยง <input class="f xs" type="number" min="0" data-k="feeAllow" placeholder="0"> บาท)
+            รวมเป็นเงิน <output class="f xs" data-sum="hosp">0</output> บาท</p>
+        </div>
+
+        <div class="opt" data-opt="host">
+          <p class="p sub"><label class="chk"><input type="checkbox" data-k="useHost"> เบิกค่าใช้จ่ายต่างๆ จากส่วนราชการผู้จัด</label></p>
+        </div>
+
+        <div class="opt" data-opt="fare">
+          <p class="p sub"><label class="chk"><input type="checkbox" data-k="useFare"> เบิกค่าพาหนะโดยสาร</label>
+            (รถประจำทาง <input class="f xs" type="number" min="0" data-k="fareBus" placeholder="0"> บาท / รถไฟ <input class="f xs" type="number" min="0" data-k="fareTrain" placeholder="0"> บาท / เครื่องบิน <input class="f xs" type="number" min="0" data-k="fareAir" placeholder="0"> บาท / แท็กซี่ <input class="f xs" type="number" min="0" data-k="fareTaxi" placeholder="0"> บาท)
+            รวมเป็นเงิน <output class="f xs" data-sum="fare">0</output> บาท</p>
+        </div>
+
+        <div class="opt" data-opt="gov">
+          <p class="p sub"><label class="chk"><input type="checkbox" data-k="useGovCar"> ขอใช้รถยนต์ของทางราชการ</label>
+            หมายเลขทะเบียน <input class="f s" data-k="govPlate" placeholder="ทะเบียน"> โดยมี <input class="f m" data-k="govDriver" placeholder="ชื่อพนักงานขับรถ"> เป็นพนักงานขับรถ
+            และเบิกค่าน้ำมันเชื้อเพลิง <input class="f xs" type="number" min="0" data-k="govFuel" placeholder="0"> บาท / ค่าธรรมเนียมทางด่วน (รถราชการ) <input class="f xs" type="number" min="0" data-k="govToll" placeholder="0"> บาท
+            รวมเป็นเงิน <output class="f xs" data-sum="gov">0</output> บาท</p>
+        </div>
+
+        <div class="opt" data-opt="own">
+          <p class="p sub"><label class="chk"><input type="checkbox" data-k="useOwnCar"> ขอใช้รถยนต์ส่วนบุคคล</label>
+            หมายเลขทะเบียน <input class="f s" data-k="ownPlate" placeholder="เช่น ขต 2468 พิษณุโลก"> และเงินชดเชยค่าพาหนะส่วนตัวในอัตรากิโลเมตรละ <input class="f xs" type="number" min="0" step="0.5" data-k="ownRate" placeholder="4"> บาท
+            โดยเดินทางจาก <input class="f m" data-k="ownFrom" placeholder="โรงพยาบาลพรหมพิราม"> ถึง <input class="f l" data-k="ownTo" placeholder="ปลายทาง">
+            รวมระยะทางทั้งหมด (ไป-กลับ) <input class="f xs" type="number" min="0" data-k="ownKm" placeholder="0"> กิโลเมตร คิดเป็นเงิน <output class="f xs" data-sum="own">0</output> บาท</p>
+        </div>
+
+        <p class="p">โดยจะออกเดินทาง ในวันที่ <span class="dt"><input type="date" data-k="depDate"><span class="dt-text">เลือกวันที่</span></span> เวลา <input class="f" type="time" data-k="depTime"> น.
+          และกลับมาถึงที่โรงพยาบาลพรหมพิราม/ที่พัก/บ้านพัก ในวันที่ <span class="dt"><input type="date" data-k="retDate"><span class="dt-text">เลือกวันที่</span></span> เวลา <input class="f" type="time" data-k="retTime"> น.
+          และกลับมาปฏิบัติราชการในวันที่ <span class="dt"><input type="date" data-k="workDate"><span class="dt-text">เลือกวันที่</span></span></p>
+        <p class="p">ซึ่งมอบหมายงานในหน้าที่รับผิดชอบให้ <input class="f l" data-k="delegate" placeholder="ชื่อผู้รับมอบหมายงาน"> ปฏิบัติงานแทน</p>
+
+        <div class="sign">
+          <span>ลงชื่อ <input class="f m" data-k="delegateSign" placeholder="(ลายมือชื่อ)"> ผู้รับมอบหมายงาน</span>
+        </div>
+
+        <p class="p indent" style="margin-top:12px">จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</p>
+        <div class="sign">
+          <span class="bracket">( <input class="f m" data-k="reqNameSign" placeholder="ชื่อ-สกุล ผู้ขอ"> )</span>
+          <span>ตำแหน่ง <input class="f m" data-k="reqPosSign" placeholder="ตำแหน่ง"></span>
+        </div>
+
+        <div class="opinions">
+          <div class="opinion">
+            <div>ความเห็นของหัวหน้ากลุ่มงาน / ฝ่าย / งาน</div>
+            <div>ขอไปประชุมครั้งที่ <input class="f xs" data-k="meetingNo" placeholder="1"> <label class="chk"><input type="checkbox" data-k="headOk"> เห็นควรอนุญาต</label></div>
+            <div>ลงชื่อ <input class="f m" data-k="headSign" placeholder="ชื่อหัวหน้ากลุ่มงาน"> (หน.กลุ่มงาน)</div>
+            <div>งบสนับสนุนบุคลากรคงเหลือทั้งสิ้น <input class="f xs" type="number" data-k="budgetLeft" placeholder="0"> บาท</div>
+            <div style="font-size:14px;line-height:1.6;color:var(--ink-2)">ตรวจสอบแล้ว การไปประชุมครั้งนี้ตรงกับงานที่รับผิดชอบ สามารถเบิกค่าใช้จ่ายต่างๆ ได้ตามระเบียบของทางราชการ</div>
+            <div>ลงชื่อ <input class="f m" data-k="hrSign" placeholder="ชื่อเจ้าหน้าที่"> งานพัฒนาบุคลากร</div>
+          </div>
+          <div class="opinion">
+            <h4>ความเห็นผู้อำนวยการโรงพยาบาลพรหมพิราม</h4>
+            <div class="decision">
+              <label class="ok"><input type="radio" name="decision" value="approved" data-k="decision"> อนุมัติ</label>
+              <label class="no"><input type="radio" name="decision" value="rejected" data-k="decision"> ไม่อนุมัติ</label>
+              <label><input type="radio" name="decision" value="" data-k="decision"> รอพิจารณา</label>
+            </div>
+            <textarea class="f" data-k="dirNote" rows="2" placeholder="ความเห็นเพิ่มเติม (ถ้ามี)"></textarea>
+            <div>ลงชื่อ <input class="f m" data-k="dirSign" placeholder="ชื่อผู้อำนวยการ"></div>
+            <div>วันที่ <span class="dt"><input type="date" data-k="dirDate"><span class="dt-text">เลือกวันที่</span></span></div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="side">
+        <div class="card">
+          <h3>สรุปค่าใช้จ่าย</h3>
+          <div class="row"><span>เงินบำรุงโรงพยาบาล</span><b id="sumHosp">0</b></div>
+          <div class="row"><span>ค่าพาหนะโดยสาร</span><b id="sumFare">0</b></div>
+          <div class="row"><span>รถราชการ (น้ำมัน+ทางด่วน)</span><b id="sumGov">0</b></div>
+          <div class="row"><span>รถส่วนบุคคล (ชดเชย)</span><b id="sumOwn">0</b></div>
+          <div class="row total"><span>รวมที่ขอเบิก</span><b id="sumAll">0 บาท</b></div>
+          <p class="help">คิดเฉพาะรายการที่ติ๊กเลือก · รถส่วนบุคคล = ระยะทาง × อัตรา/กม.</p>
+        </div>
+        <div class="card">
+          <h3>สถานะเรื่อง</h3>
+          <div class="choice" id="statusChoice">
+            <label><input type="radio" name="status" value="draft"> ร่าง</label>
+            <label><input type="radio" name="status" value="pending"> รอพิจารณา</label>
+          </div>
+          <p class="help">เมื่อผู้อำนวยการติ๊ก "อนุมัติ" หรือ "ไม่อนุมัติ" ในแบบฟอร์ม สถานะจะเปลี่ยนตามอัตโนมัติ</p>
+          <div class="row" style="margin-top:8px"><span>ระยะเวลาไปราชการ</span><b id="days">–</b></div>
+          <div class="row"><span>ผู้ร่วมเดินทาง</span><b id="nPersons">0 คน</b></div>
+          <div class="row"><span>ปีงบประมาณ</span><b id="fyLabel">–</b></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<div class="pv-overlay hidden" id="pv">
+  <div class="pv-bar">
+    <strong>ตัวอย่างก่อนพิมพ์ (A4)</strong>
+    <span class="grow"></span>
+    <button class="btn" id="pvDownload">ดาวน์โหลด DOCX</button>
+    <button class="btn primary" id="pvPrint">พิมพ์</button>
+    <button class="btn" id="pvClose">ปิด</button>
+  </div>
+  <div class="pv-scroll"><div class="a4" id="pvPage"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+
+
+let unsub = null;
+let items = {};        
+let current = null;    
+let dirty = false, saveTimer = null;
+let filter = { status: '', q: '', fy: '', sort: 'updated' };
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const fmtN = n => (Number(n)||0).toLocaleString('th-TH',{maximumFractionDigits:2});
+const thMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const thMonthsFull = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+function fmtDFull(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-').map(Number); if(!y) return ''; return `${d} ${thMonthsFull[m-1]} ${y+543}`; }
+function refreshDates(){ $$('.dt').forEach(w=>{ const v=w.querySelector('input').value; const t=w.querySelector('.dt-text'); const txt=fmtDFull(v); t.textContent = txt||'เลือกวันที่'; t.classList.toggle('empty',!txt); }); }
+function fmtD(iso){ if(!iso) return '–'; const [y,m,d]=iso.split('-').map(Number); if(!y) return '–'; return `${d} ${thMonths[m-1]} ${y+543}`; }
+function fiscalYear(iso){ if(!iso) return ''; const [y,m]=iso.split('-').map(Number); if(!y) return ''; return String((m>=10? y+1 : y)+543); }
+function uid(){ return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+function blank(){
+  const today = new Date().toISOString().slice(0,10);
+  return { id: uid(), createdAt: Date.now(), updatedAt: Date.now(),
+    agency:'โรงพยาบาลพรหมพิราม', dept:'ยุทธศาสตร์', docNo:'พล ๐๕๓๓.๓๐๑', docNoSuffix:'พิเศษ', docDate: today,
+    subject:'ขออนุญาตไปราชการ', to:'ผู้อำนวยการโรงพยาบาลพรหมพิราม',
+    reqName:'', reqPos:'', kind:'', topic:'', organizer:'', venue:'', dateFrom:'', dateTo:'', purpose:'',
+    persons:[{name:'',pos:''}],
+    useHosp:false, feeReg:'', feeStay:'', feeAllow:'',
+    useHost:false,
+    useFare:false, fareBus:'', fareTrain:'', fareAir:'', fareTaxi:'',
+    useGovCar:false, govPlate:'', govDriver:'', govFuel:'', govToll:'',
+    useOwnCar:false, ownPlate:'', ownRate:'', ownFrom:'โรงพยาบาลพรหมพิราม', ownTo:'', ownKm:'',
+    depDate:'', depTime:'', retDate:'', retTime:'', workDate:'', delegate:'', delegateSign:'',
+    reqNameSign:'', reqPosSign:'',
+    meetingNo:'', headOk:false, headSign:'', budgetLeft:'', hrSign:'',
+    decision:'', dirNote:'', dirSign:'', dirDate:'',
+    status:'draft' };
+}
+
+
+function exampleData(){
+  return Object.assign(blank(), {
+    docDate:'2026-09-17', reqName:'น.ส.สกาวพรรณ อวัสดาถาวร', reqPos:'นักสาธารณสุขชำนาญการ', kind:'ประชุม',
+    topic:'ขอเชิญเข้าร่วมประชุมทบทวนแผนพัฒนาสาธารณสุขพิษณุโลก ประจำปีงบประมาณ พ.ศ.2570',
+    organizer:'สำนักงานสาธารณสุขจังหวัดพิษณุโลก', venue:'168 HEAVEN ดิ อัยยารินทร์ รีสอร์ท อำเภอเมือง จังหวัดพิษณุโลก',
+    dateFrom:'2026-09-23', dateTo:'2026-09-24',
+    purpose:'1.เพื่อร่วมกันทบทวนสถานการณ์ ปัญหาสาธารณสุข เป้าหมายและแนวทางการดำเนินงานตามประเด็นมุ่งเน้นสุขภาพจังหวัดพิษณุโลก\n2.เพื่อบูรณาการการดำเนินงานของหน่วยงานในระดับจังหวัด อำเภอ และเครือข่ายบริการสุขภาพให้เป็นไปในทิศทางเดียวกัน',
+    persons:[{name:'นางดวงพร ผลดีนานา',pos:'นักสาธารณสุขชำนาญการ'},{name:'นายพิเชษฐ์ วีระกิจพานิช',pos:'นักสาธารณสุขชำนาญการ'},{name:'นายเจริญ คลังเอี่ยม',pos:'แพทย์แผนไทยชำนาญการ'}],
+    useOwnCar:true, ownPlate:'ขต 2468 พิษณุโลก', ownFrom:'โรงพยาบาลพรหมพิราม', ownTo:'168 HEAVEN ดิ อัยยารินทร์ รีสอร์ท อำเภอเมือง จังหวัดพิษณุโลก',
+    depDate:'2026-09-23', depTime:'08:00', retDate:'2026-09-24', retTime:'18:00', workDate:'2026-09-25',
+    delegate:'น.ส.กัญญารัตน์ มุขแจ้ง', reqNameSign:'น.ส.สกาวพรรณ อวัสดาถาวร', reqPosSign:'นักสาธารณสุขชำนาญการ',
+    status:'pending' });
+}
+
+ 
+function gs(fn, ...args){ return new Promise((ok,fail)=>google.script.run.withSuccessHandler(ok).withFailureHandler(fail)[fn](...args)); }
+function setSync(mode){
+  const el=$('#syncState'); el.className='sync '+mode;
+  el.querySelector('span').textContent = mode==='on' ? 'เชื่อมต่อ Google Sheets แล้ว' : mode==='busy' ? 'กำลังบันทึก…' : 'เชื่อมต่อไม่ได้';
+}
+async function persist(rec){
+  rec.updatedAt = Date.now(); items[rec.id]=rec; setSync('busy');
+  try{ await gs('saveRequest', JSON.stringify(rec)); setSync('on'); }
+  catch(e){ setSync('local'); toast('บันทึกลง Google Sheets ไม่สำเร็จ'); throw e; }
+}
+async function remove(id){ delete items[id]; try{ await gs('deleteRequest', id); }catch(e){ toast('ลบไม่สำเร็จ'); } }
+async function reloadAll(){
+  try{ const arr=JSON.parse(await gs('listRequests')); items={}; arr.forEach(r=>items[r.id]=r); setSync('on'); }
+  catch(e){ setSync('local'); toast('โหลดข้อมูลจาก Google Sheets ไม่สำเร็จ'); }
+  renderDash();
+}
+async function initStorage(){ await reloadAll(); setInterval(()=>{ if($('#viewEdit').classList.contains('hidden')) reloadAll(); }, 60000); }
+var db=null;
+
+
+function derivedStatus(r){ if(r.decision==='approved') return 'approved'; if(r.decision==='rejected') return 'rejected'; return r.status==='pending'?'pending':'draft'; }
+const statusLabel = {draft:'ร่าง',pending:'รอพิจารณา',approved:'อนุมัติ',rejected:'ไม่อนุมัติ'};
+function sums(r){
+  const n=v=>Number(v)||0;
+  const hosp = r.useHosp ? n(r.feeReg)+n(r.feeStay)+n(r.feeAllow) : 0;
+  const fare = r.useFare ? n(r.fareBus)+n(r.fareTrain)+n(r.fareAir)+n(r.fareTaxi) : 0;
+  const gov  = r.useGovCar ? n(r.govFuel)+n(r.govToll) : 0;
+  const own  = r.useOwnCar ? n(r.ownKm)*n(r.ownRate) : 0;
+  return {hosp,fare,gov,own, all:hosp+fare+gov+own};
+}
+
+function renderDash(){
+  const all = Object.values(items);
+  const counts={all:all.length,draft:0,pending:0,approved:0,rejected:0};
+  all.forEach(r=>counts[derivedStatus(r)]++);
+  const money = all.filter(r=>derivedStatus(r)==='approved' && (!filter.fy || fiscalYear(r.docDate)===filter.fy)).reduce((a,r)=>a+sums(r).all,0);
+  $('#stats').innerHTML = [
+    ['all','ทั้งหมด',counts.all],['pending','รอพิจารณา',counts.pending],['approved','อนุมัติแล้ว',counts.approved],['rejected','ไม่อนุมัติ',counts.rejected],['draft','ฉบับร่าง',counts.draft]
+  ].map(([k,l,n])=>`<button class="stat s-${k} ${filter.status===(k==='all'?'':k)?'active':''}" data-st="${k==='all'?'':k}"><div class="n">${n}</div><div class="l">${l}</div></button>`).join('')
+  + `<div class="stat s-money"><div class="n">${fmtN(money)}</div><div class="l">บาท อนุมัติเบิก${filter.fy?' ปีงบ '+filter.fy:''}</div></div>`;
+  $$('.stat[data-st]').forEach(b=>b.onclick=()=>{ filter.status=b.dataset.st; renderDash(); });
+
+  
+  const fys=[...new Set(all.map(r=>fiscalYear(r.docDate)).filter(Boolean))].sort().reverse();
+  const sel=$('#fy'); const cur=sel.value;
+  sel.innerHTML='<option value="">ทุกปีงบประมาณ</option>'+fys.map(f=>`<option ${f===cur?'selected':''}>${f}</option>`).join('');
+
+  let list = all.filter(r=>{
+    if(filter.status && derivedStatus(r)!==filter.status) return false;
+    if(filter.fy && fiscalYear(r.docDate)!==filter.fy) return false;
+    if(filter.q){ const q=filter.q.toLowerCase(); const hay=[r.reqName,r.topic,r.organizer,r.venue,r.docNo,...(r.persons||[]).map(p=>p.name)].join(' ').toLowerCase(); if(!hay.includes(q)) return false; }
+    return true;
+  });
+  list.sort((a,b)=> filter.sort==='travel' ? (b.dateFrom||'').localeCompare(a.dateFrom||'') : filter.sort==='doc' ? (b.docDate||'').localeCompare(a.docDate||'') : (b.updatedAt||0)-(a.updatedAt||0));
+
+  $('#rows').innerHTML = list.map(r=>{
+    const st=derivedStatus(r); const s=sums(r);
+    const travel = r.dateFrom ? (r.dateTo && r.dateTo!==r.dateFrom ? `${fmtD(r.dateFrom)} – ${fmtD(r.dateTo)}` : fmtD(r.dateFrom)) : '–';
+    const who = [r.reqName||'(ไม่ระบุชื่อ)', (r.persons||[]).filter(p=>p.name).length ? `+${(r.persons||[]).filter(p=>p.name).length} คน`:''].filter(Boolean).join(' ');
+    return `<tr data-id="${r.id}">
+      <td>${fmtD(r.docDate)}</td>
+      <td class="title"><div class="t">${esc(r.topic||r.subject||'(ยังไม่ระบุเรื่อง)')}</div><div class="s">${esc(who)}${r.organizer?' · '+esc(r.organizer):''}</div></td>
+      <td>${travel}</td>
+      <td class="num">${s.all?fmtN(s.all):'–'}</td>
+      <td><span class="pill ${st}">${statusLabel[st]}</span></td></tr>`;
+  }).join('');
+  $('#emptyState').classList.toggle('hidden', all.length>0);
+  if(all.length>0 && list.length===0) $('#rows').innerHTML=`<tr><td colspan="5" class="empty">ไม่พบรายการที่ตรงกับเงื่อนไข</td></tr>`;
+  $$('#rows tr[data-id]').forEach(tr=>tr.onclick=()=>openRequest(tr.dataset.id));
+}
+function esc(s){ return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+
+
+function show(view){ $('#viewDash').classList.toggle('hidden', view!=='dash'); $('#viewEdit').classList.toggle('hidden', view!=='edit'); window.scrollTo({top:0}); }
+
+function newRequest(){ current=blank(); dirty=true; fillForm(); show('edit'); $('#btnDelete').classList.add('hidden'); $('#editMeta').textContent='บันทึกใหม่ · ยังไม่ได้บันทึก'; $('[data-k="reqName"]').focus(); }
+function openRequest(id){ if(!items[id]) return; current=JSON.parse(JSON.stringify(items[id])); if(current.docNoSuffix===undefined){ const i=(current.docNo||'').indexOf('/'); if(i>-1){ current.docNoSuffix=current.docNo.slice(i+1).trim(); current.docNo=current.docNo.slice(0,i).trim(); } else current.docNoSuffix=''; } dirty=false; fillForm(); show('edit'); $('#btnDelete').classList.remove('hidden'); updateMeta(); }
+function updateMeta(){ if(!current) return; const d=new Date(current.updatedAt); $('#editMeta').textContent = `แก้ไขล่าสุด ${d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})} ${d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}`; }
+
+function fillForm(){
+  const r=current;
+  $$('#paper [data-k]').forEach(el=>{
+    const k=el.dataset.k;
+    if(el.type==='checkbox') el.checked=!!r[k];
+    else if(el.type==='radio') el.checked = (r[k]||'')===el.value;
+    else el.value = r[k]??'';
+  });
+  $$('#statusChoice input').forEach(i=>i.checked = i.value===(r.status||'draft'));
+  renderPersons(); recompute(); refreshDates();
+}
+function renderPersons(){
+  const ul=$('#persons'); const ps=current.persons||[];
+  ul.innerHTML = ps.map((p,i)=>`<li><span class="idx">${i+1}.</span><input class="f m" data-p="name" data-i="${i}" value="${esc(p.name)}" placeholder="ชื่อ-สกุล"> ตำแหน่ง <input class="f m" data-p="pos" data-i="${i}" value="${esc(p.pos)}" placeholder="ตำแหน่ง"><button class="rm no-print" data-rm="${i}" title="ลบ">×</button></li>`).join('');
+  ul.querySelectorAll('[data-p]').forEach(inp=>inp.oninput=()=>{ current.persons[+inp.dataset.i][inp.dataset.p]=inp.value; markDirty(); });
+  ul.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ current.persons.splice(+b.dataset.rm,1); if(!current.persons.length) current.persons.push({name:'',pos:''}); renderPersons(); markDirty(); });
+  $('#nPersons').textContent = ps.filter(p=>p.name.trim()).length+' คน';
+}
+function readForm(){
+  const r=current;
+  $$('#paper [data-k]').forEach(el=>{
+    const k=el.dataset.k;
+    if(el.type==='checkbox') r[k]=el.checked;
+    else if(el.type==='radio'){ if(el.checked) r[k]=el.value; }
+    else r[k]=el.value;
+  });
+  const st=$('#statusChoice input:checked'); if(st) r.status=st.value;
+}
+function recompute(){
+  readForm();
+  const s=sums(current);
+  $$('[data-sum]').forEach(o=>o.value=fmtN(s[o.dataset.sum]));
+  $('#sumHosp').textContent=fmtN(s.hosp); $('#sumFare').textContent=fmtN(s.fare); $('#sumGov').textContent=fmtN(s.gov); $('#sumOwn').textContent=fmtN(s.own);
+  $('#sumAll').textContent=fmtN(s.all)+' บาท';
+  $$('.opt').forEach(d=>{ const map={hosp:'useHosp',host:'useHost',fare:'useFare',gov:'useGovCar',own:'useOwnCar'}; d.classList.toggle('on', !!current[map[d.dataset.opt]]); });
+  if(current.dateFrom && current.dateTo){ const a=new Date(current.dateFrom), b=new Date(current.dateTo); const n=Math.round((b-a)/86400000)+1; $('#days').textContent = n>0? n+' วัน':'–'; } else $('#days').textContent='–';
+  $('#fyLabel').textContent = fiscalYear(current.docDate)||'–';
+  
+  const dec=current.decision;
+  $$('#statusChoice label').forEach(l=>l.style.display = dec?'none':'');
+  const stHelp=$('#statusChoice').nextElementSibling;
+  stHelp.textContent = dec ? `สถานะ: ${statusLabel[dec]} (ตามความเห็นผู้อำนวยการ)` : 'เมื่อผู้อำนวยการติ๊ก "อนุมัติ" หรือ "ไม่อนุมัติ" ในแบบฟอร์ม สถานะจะเปลี่ยนตามอัตโนมัติ';
+  
+}
+function markDirty(){ dirty=true; $('#savedNote').textContent='มีการแก้ไขที่ยังไม่บันทึก'; $('#savedNote').style.color='var(--amber)'; clearTimeout(saveTimer); saveTimer=setTimeout(saveCurrent, 1500); }
+
+async function saveCurrent(){
+  if(!current) return; readForm();
+  if(!current.reqNameSign && current.reqName) current.reqNameSign=current.reqName;
+  if(!current.reqPosSign && current.reqPos) current.reqPosSign=current.reqPos;
+  try{ await persist(current); dirty=false; $('#savedNote').textContent='บันทึกแล้ว'; $('#savedNote').style.color='var(--green)'; $('#btnDelete').classList.remove('hidden'); updateMeta(); renderDash(); fillForm(); }
+  catch(e){ $('#savedNote').textContent='บันทึกไม่สำเร็จ'; $('#savedNote').style.color='var(--red)'; }
+}
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600); }
+
+ 
+$('#btnNew').onclick=newRequest;
+$('#btnHome').onclick=$('#btnBack').onclick=async()=>{ if(dirty){ clearTimeout(saveTimer); await saveCurrent(); } show('dash'); reloadAll(); };
+$('#btnSave').onclick=()=>{ clearTimeout(saveTimer); saveCurrent(); toast('บันทึกแล้ว'); };
+$('#btnPrint').onclick=openPreview;
+$('#btnExample').onclick=()=>{ const keep={id:current.id,createdAt:current.createdAt}; current=Object.assign(exampleData(),keep); fillForm(); markDirty(); toast('เติมข้อมูลตัวอย่างจากไฟล์แล้ว'); };
+$('#btnDelete').onclick=async()=>{ if(!current) return; if(!confirm('ลบบันทึกนี้ถาวรหรือไม่?')) return; clearTimeout(saveTimer); dirty=false; await remove(current.id); current=null; show('dash'); renderDash(); toast('ลบแล้ว'); };
+$('#addPerson').onclick=()=>{ if(current.persons.length>=8) return toast('เพิ่มได้สูงสุด 8 คน'); current.persons.push({name:'',pos:''}); renderPersons(); markDirty(); $('#persons li:last-child input').focus(); };
+$('#paper').addEventListener('input', e=>{ if(e.target.dataset.k){ recompute(); markDirty(); if(e.target.type==='date') refreshDates(); } });
+$('#paper').addEventListener('change', e=>{ if(e.target.dataset.k){ recompute(); markDirty(); if(e.target.type==='date') refreshDates(); } });
+$('#paper').addEventListener('click', e=>{ const w=e.target.closest('.dt'); if(w){ const i=w.querySelector('input'); try{ i.showPicker && i.showPicker(); }catch(_){ i.focus(); } } });
+$('#statusChoice').addEventListener('change', ()=>{ readForm(); markDirty(); });
+$('#q').oninput=e=>{ filter.q=e.target.value.trim(); renderDash(); };
+$('#fy').onchange=e=>{ filter.fy=e.target.value; renderDash(); };
+$('#sortBy').onchange=e=>{ filter.sort=e.target.value; renderDash(); };
+
+document.addEventListener('keydown', e=>{ if((e.ctrlKey||e.metaKey) && e.key==='s' && !$('#viewEdit').classList.contains('hidden')){ e.preventDefault(); $('#btnSave').click(); } });
+
+
+
+const GARUDA_SRC = document.querySelector('.paper .garuda').getAttribute('src');
+const v = x => `<u class="v" contenteditable="true" spellcheck="false">${esc(x)}</u>`;
+const money = x => (x===''||x==null) ? '' : fmtN(x);
+const box = on => `<span class="m-box">${on?'✓':''}</span>`;
+function memoInner(r){
+  const s=sums(r);
+  const persons=(r.persons||[]).filter(p=>p.name.trim());
+  const kind = r.kind || 'อบรม ประชุม / สัมมนา';
+  return `
+  <img class="m-garuda" src="${GARUDA_SRC}" alt="">
+  <h2>บันทึกข้อความ</h2>
+  <div class="m-hdr">
+    <div><b>ส่วนราชการ</b> ${esc(r.agency)}</div><div><b>กลุ่มงาน</b> ${esc(r.dept)}</div>
+    <div><b>ที่</b> ${esc(r.docNo)} / ${esc(r.docNoSuffix||'')}</div><div><b>วันที่</b> ${fmtDFull(r.docDate)}</div>
+    <div style="grid-column:1/-1"><b>เรื่อง</b> ${esc(r.subject)}</div>
+  </div>
+  <hr class="m-rule">
+  <p><b>เรียน</b> ${esc(r.to)}</p>
+  <p class="m-ind">ข้าพเจ้า ${v(r.reqName)} ตำแหน่ง ${v(r.reqPos)} มีความประสงค์ขออนุญาตไปราชการ เพื่อเข้ารับการ${esc(kind)} เรื่อง</p>
+  <p class="m-pre">${v(r.topic)}</p>
+  <p>หน่วยงานผู้จัด ${v(r.organizer)} สถานที่ ${v(r.venue)}</p>
+  <p>ระหว่างวันที่ ${v(fmtDFull(r.dateFrom))} ถึงวันที่ ${v(fmtDFull(r.dateTo))} วัตถุประสงค์ของการสมัครเข้ารับการอบรมเพื่อ</p>
+  <p class="m-pre">${esc(r.purpose)}</p>
+  <p class="m-ind">ทั้งนี้ มีผู้เข้าร่วมประชุมกับข้าพเจ้าด้วย ดังนี้</p>
+  <ol>${persons.length? persons.map(p=>`<li>${esc(p.name)} &nbsp;&nbsp; ตำแหน่ง ${esc(p.pos)}</li>`).join('') : '<li>–</li>'}</ol>
+  <p>ในการไปราชการครั้งนี้ ขออนุญาต</p>
+  <p class="m-sub">${box(r.useHosp)}เบิกค่าใช้จ่ายต่างๆ จากเงินบำรุงโรงพยาบาล (ค่าลงทะเบียน ${v(money(r.feeReg))} บาท / ค่าที่พัก ${v(money(r.feeStay))} บาท / ค่าเบี้ยเลี้ยง ${v(money(r.feeAllow))} บาท) รวมเป็นเงิน ${v(r.useHosp?fmtN(s.hosp):'')} บาท</p>
+  <p class="m-sub">${box(r.useHost)}เบิกค่าใช้จ่ายต่างๆ จากส่วนราชการผู้จัด</p>
+  <p class="m-sub">${box(r.useFare)}เบิกค่าพาหนะโดยสาร (รถประจำทาง ${v(money(r.fareBus))} บาท / รถไฟ ${v(money(r.fareTrain))} บาท / เครื่องบิน ${v(money(r.fareAir))} บาท / แท็กซี่ ${v(money(r.fareTaxi))} บาท) รวมเป็นเงิน ${v(r.useFare?fmtN(s.fare):'')} บาท</p>
+  <p class="m-sub">${box(r.useGovCar)}ขอใช้รถยนต์ของทางราชการ หมายเลขทะเบียน ${v(r.govPlate)} โดยมี ${v(r.govDriver)} เป็นพนักงานขับรถ และเบิกค่าน้ำมันเชื้อเพลิง ${v(money(r.govFuel))} บาท / ค่าธรรมเนียมทางด่วน (รถราชการ) ${v(money(r.govToll))} บาท รวมเป็นเงิน ${v(r.useGovCar?fmtN(s.gov):'')} บาท</p>
+  <p class="m-sub">${box(r.useOwnCar)}ขอใช้รถยนต์ส่วนบุคคล หมายเลขทะเบียน ${v(r.ownPlate)} และเงินชดเชยค่าพาหนะส่วนตัวในอัตรากิโลเมตรละ ${v(money(r.ownRate))} บาท โดยเดินทางจาก ${v(r.ownFrom)} ถึง ${v(r.ownTo)} รวมระยะทางทั้งหมด (ไป-กลับ) ${v(money(r.ownKm))} กิโลเมตร คิดเป็นเงิน ${v(r.useOwnCar?fmtN(s.own):'')} บาท</p>
+  <p>โดยจะออกเดินทาง ในวันที่ ${v(fmtDFull(r.depDate))} เวลา ${v(r.depTime)} น. และกลับมาถึงที่โรงพยาบาลพรหมพิราม/ที่พัก/บ้านพัก ในวันที่ ${v(fmtDFull(r.retDate))} เวลา ${v(r.retTime)} น. และกลับมาปฏิบัติราชการในวันที่ ${v(fmtDFull(r.workDate))}</p>
+  <p>ซึ่งมอบหมายงานในหน้าที่รับผิดชอบให้ ${v(r.delegate)} ปฏิบัติงานแทน</p>
+  <div class="m-sign"><div>ลงชื่อ <u class="v" style="min-width:170px">${esc(r.delegateSign)}</u> ผู้รับมอบหมายงาน</div></div>
+  <p class="m-ind">จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</p>
+  <div class="m-sign" style="margin-top:26px"><div>( <u class="v" style="min-width:170px;text-align:center">${esc(r.reqNameSign||r.reqName)}</u> )<br>ตำแหน่ง <u class="v" style="min-width:170px;text-align:center">${esc(r.reqPosSign||r.reqPos)}</u></div></div>
+  <div class="m-op">
+    <div>
+      <div class="ln">ความเห็นของหัวหน้ากลุ่มงาน / ฝ่าย / งาน</div>
+      <div class="ln">ขอไปประชุมครั้งที่ <u class="v g">${esc(r.meetingNo)}</u> ${box(r.headOk)}เห็นควรอนุญาต</div>
+      <div class="ln" style="margin-top:.9em">ลงชื่อ <u class="v g">${esc(r.headSign)}</u> (หน.กลุ่มงาน)</div>
+      <div class="ln">งบสนับสนุนบุคลากรคงเหลือทั้งสิ้น <u class="v g">${esc(money(r.budgetLeft))}</u> บาท</div>
+      <div class="ln">ตรวจสอบแล้ว การไปประชุมครั้งนี้ตรงกับงานที่รับผิดชอบ</div>
+      <div class="ln">สามารถเบิกค่าใช้จ่ายต่างๆ ได้ตามระเบียบของทางราชการ</div>
+      <div class="ln" style="margin-top:1.4em">ลงชื่อ <u class="v g">${esc(r.hrSign)}</u> งานพัฒนาบุคลากร</div>
+      <div class="ln m-center" style="padding-left:1.5em">( <u class="v g">${esc(r.hrSign)}</u> )</div>
+    </div>
+    <div>
+      <h4>ความเห็นผู้อำนวยการโรงพยาบาลพรหมพิราม</h4>
+      <div class="ln" style="justify-content:space-around"><span>${box(false)}อนุมัติ</span><span>${box(false)}ไม่อนุมัติ</span></div>
+      <div class="ln"><u class="v g">${esc((r.dirNote||'').split('\n')[0]||'')}</u></div>
+      <div class="ln"><u class="v g">${esc((r.dirNote||'').split('\n').slice(1).join(' '))}</u></div>
+      <div class="ln" style="margin-top:1.6em;padding-left:1.5em">ลงชื่อ</div>
+      <div class="ln" style="padding-left:2.5em">( <u class="v g">${esc(r.dirSign)}</u> )</div>
+      <div class="ln" style="padding-left:2.5em"><u class="v g">${esc(r.dirPos||'')}</u></div>
+      <div class="ln" style="padding-left:2.5em"><u class="v g">${esc(fmtDFull(r.dirDate) ? 'วันที่ '+fmtDFull(r.dirDate) : '')}</u></div>
+    </div>
+  </div>`;
+}
+function memoDocument(r, innerHtml){
+  const css = document.querySelector('style').textContent;
+  const bodyHtml = innerHtml || memoInner(r);
+  return `<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>บันทึกข้อความ ขออนุญาตไปราชการ - ${esc(r.reqName||'')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>${css}
+@page{size:A4 portrait;margin:0}
+html,body{width:210mm;min-height:297mm;margin:0!important;padding:0!important;background:#fff}
+.pv-overlay{position:static;background:none;display:block}.pv-scroll{padding:0;overflow:visible}.a4{width:210mm;height:297mm;max-width:210mm;box-shadow:none;margin:0!important;padding:8mm 12mm 8mm 14mm}
+</style></head>
+<body><div class="pv-overlay"><div class="pv-scroll"><div class="a4"><div class="a4-inner">${bodyHtml}</div></div></div></div>
+${"<scr"+"ipt>"}${FIT_SRC}\n${PREPARE_SRC}\nfunction run(){const page=document.querySelector(".a4");prepareMemoFields(page);fitA4(page);}\nif(document.fonts&&document.fonts.ready){document.fonts.ready.then(run);}else{run();}\nwindow.addEventListener("beforeprint",run);${"</scr"+"ipt>"}</body></html>`;
+}
+
+function fitA4(page){
+  const inner=page.querySelector('.a4-inner'); if(!inner) return;
+  inner.style.transform=''; inner.style.width='';
+  const cs=getComputedStyle(page);
+  const availW=page.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  const availH=page.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  const needW=inner.scrollWidth;
+  const needH=inner.scrollHeight;
+  const ratios=[];
+  if(availW>0 && needW>availW) ratios.push(availW/needW);
+  if(availH>0 && needH>availH) ratios.push(availH/needH);
+  if(ratios.length){
+    const k=Math.max(0.7, Math.min(...ratios));
+    inner.style.transform=`scale(${k})`;
+    inner.style.width=(100/k)+'%';
+  }
+}
+const FIT_SRC = fitA4.toString();
+function prepareMemoFields(root){
+  const scope=root||document;
+  const fields=(scope.matches&&scope.matches('.a4')) ? scope.querySelectorAll('u.v') : scope.querySelectorAll('.a4 u.v');
+  fields.forEach(el=>{
+    el.setAttribute('contenteditable','true');
+    el.setAttribute('spellcheck','false');
+    el.setAttribute('tabindex','0');
+    if(el.dataset.memoEditReady) return;
+    el.dataset.memoEditReady='1';
+    const clean=()=>{
+      if(!el.textContent.replace(/\u00a0/g,'').trim()) el.innerHTML='';
+      const page=el.closest('.a4');
+      if(page) fitA4(page);
+    };
+    el.addEventListener('input', clean);
+    el.addEventListener('blur', clean);
+    el.addEventListener('paste', e=>{
+      const data=e.clipboardData||window.clipboardData;
+      if(!data) return;
+      e.preventDefault();
+      document.execCommand('insertText', false, data.getData('text/plain'));
+    });
+  });
+}
+const PREPARE_SRC = prepareMemoFields.toString();
+function getPreviewMemoHtml(){
+  if($('#pv').classList.contains('hidden')) return '';
+  const inner=$('#pvPage .a4-inner');
+  return inner ? inner.innerHTML : '';
+}
+function openPreview(){
+  readForm();
+  $('#pvPage').innerHTML='<div class="a4-inner">'+memoInner(current)+'</div>';
+  $('#pv').classList.remove('hidden');
+  document.body.classList.add('pv-print');
+  prepareMemoFields($('#pvPage'));
+  fitA4($('#pvPage'));
+}
+function closePreview(){ $('#pv').classList.add('hidden'); document.body.classList.remove('pv-print'); }
+function doPrint(){
+  readForm();
+  const editedHtml=getPreviewMemoHtml();
+  
+  let w=null; try{ w=window.open('', '_blank'); }catch(e){}
+  if(w && w.document){
+    w.document.open(); w.document.write(memoDocument(current, editedHtml)); w.document.close();
+    let printed=false; const go=()=>{ if(printed) return; printed=true; try{ w.focus(); w.print(); }catch(e){} };
+    w.addEventListener('load', ()=>{ if(w.document.fonts&&w.document.fonts.ready) w.document.fonts.ready.then(()=>setTimeout(go,300)); else setTimeout(go,500); });
+    setTimeout(go, 2500);
+    return;
+  }
+  
+  try{ window.print(); }catch(e){ toast('เบราว์เซอร์ไม่อนุญาตให้พิมพ์จากหน้านี้ กรุณาดาวน์โหลดไฟล์แล้วพิมพ์'); }
+}
+async function downloadMemo(){
+  readForm();
+  const html=memoDocument(current, getPreviewMemoHtml());
+  const name=`ขออนุญาตไปราชการ_${(current.reqName||'form').replace(/[\\/:*?"<>|\s]+/g,'_')}_${current.docDate||''}.docx`;
+  if(!(typeof google !== 'undefined' && google.script && google.script.run)){
+    toast('ต้องเปิดผ่าน Apps Script Web App เพื่อส่งออกเป็น DOCX');
+    return;
+  }
+  let res;
+  try{
+    res = JSON.parse(await gs('exportMemoDocx', html, name));
+  }catch(e){
+    toast('ส่งออก DOCX ไม่สำเร็จ: '+((e&&e.message)||e||'ไม่ทราบสาเหตุ'));
+    return;
+  }
+  const bytes=Uint8Array.from(atob(res.base64), c=>c.charCodeAt(0));
+  let dl=null; try{ if(window.claude&&window.claude.use) dl=await window.claude.use('downloads'); }catch(e){}
+  if(dl){ try{ await dl.save({filename:res.filename||name, data:bytes}); toast('ดาวน์โหลด DOCX แล้ว'); return; }catch(e){ if(e&&e.code==='cancelled') return; } }
+  try{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([bytes],{type:res.mimeType||'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})); a.download=res.filename||name; document.body.appendChild(a); a.click(); a.remove(); toast('ดาวน์โหลด DOCX แล้ว'); }
+  catch(e){ toast('ดาวน์โหลดไม่สำเร็จ'); }
+}
+$('#pvClose').onclick=closePreview;
+window.addEventListener('resize',()=>{ if(!$('#pv').classList.contains('hidden')) fitA4($('#pvPage')); });
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ if(!$('#pv').classList.contains('hidden')) fitA4($('#pvPage')); });
+$('#pvPrint').onclick=doPrint;
+$('#pvDownload').onclick=downloadMemo;
+$('#pv').addEventListener('click', e=>{ if(e.target===$('#pv')) closePreview(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#pv').classList.contains('hidden')) closePreview(); });
+
+ 
+async function exportAll(){
+  const data=JSON.stringify({app:'ptr-requests',version:1,exportedAt:new Date().toISOString(),items:Object.values(items)},null,1);
+  const name=`ขออนุญาตไปราชการ_สำรอง_${new Date().toISOString().slice(0,10)}.json`;
+  let dl=null; try{ if(window.claude&&window.claude.use) dl=await window.claude.use('downloads'); }catch(e){}
+  if(dl){ try{ await dl.save({filename:name,data}); toast('ส่งออกแล้ว'); return; }catch(e){ if(e&&e.code==='cancelled') return; } }
+  try{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:'application/json'})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); toast('ส่งออกแล้ว'); }catch(e){ toast('ส่งออกไม่สำเร็จ'); }
+}
+async function importAll(file){
+  try{
+    const j=JSON.parse(await file.text()); const arr=Array.isArray(j)?j:(j.items||[]);
+    let n=0; for(const r of arr){ if(r&&r.id){ if(!items[r.id]||(r.updatedAt||0)>(items[r.id].updatedAt||0)){ await persist(Object.assign({},r)); n++; } } }
+    renderDash(); toast(`นำเข้าแล้ว ${n} รายการ`);
+  }catch(e){ toast('ไฟล์ไม่ถูกต้อง นำเข้าไม่สำเร็จ'); }
+}
+$('#btnExport').onclick=exportAll;
+$('#btnImport').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=e=>{ const f=e.target.files[0]; if(f) importAll(f); e.target.value=''; };
+
+initStorage();
+</script>
+</body>
+</html>

@@ -1,0 +1,1343 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>แบบฟอร์มขออนุญาตไปราชการ</title>
+  <style>
+    :root {
+      --bg: #f6f7f8;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #697586;
+      --line: #d9e1e7;
+      --soft: #eef5f4;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --blue: #2563eb;
+      --violet: #7c3aed;
+      --sun: #f59e0b;
+      --gold: #b7791f;
+      --red: #b42318;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+      --deep-shadow: 0 18px 36px rgba(15, 23, 42, .18), inset 0 1px 0 rgba(255,255,255,.62);
+      font-family: "TH Sarabun New", Tahoma, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: linear-gradient(135deg, #eef7f4 0%, #f7fafc 46%, #fff7e6 100%); color: var(--ink); font-size: 16px; }
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; border-radius: 10px; min-height: 42px; padding: 9px 14px; background: #e7ecef; color: var(--ink); transition: transform .12s ease, background .12s ease, box-shadow .12s ease; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(15, 23, 42, .14); }
+    button.primary { background: linear-gradient(135deg, #0f766e, #2563eb); color: #fff; box-shadow: 0 10px 18px rgba(15, 118, 110, .22); }
+    button.primary:hover { background: linear-gradient(135deg, #115e59, #1d4ed8); }
+    button.warning { background: linear-gradient(135deg, #fff7df, #ffe1a6); color: #7c4a03; box-shadow: 0 8px 16px rgba(183, 121, 31, .16); }
+    button.danger { background: #fee4e2; color: var(--red); }
+    button.ghost { background: transparent; border: 1px solid var(--line); }
+    input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 7px; padding: 8px 10px; min-height: 38px; outline: none; }
+    textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
+    input:focus, select:focus, textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15, 118, 110, .12); }
+    label { display: grid; gap: 6px; color: #334155; font-weight: 600; }
+    .app { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
+    .sidebar {
+      background: linear-gradient(155deg, #0f766e 0%, #1e40af 56%, #7c3aed 100%);
+      border-right: 0;
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      color: #fff;
+      box-shadow: 18px 0 38px rgba(15, 23, 42, .20);
+    }
+    .brand {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 18px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .24);
+      box-shadow: var(--deep-shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand strong { font-size: 30px; line-height: 1.08; letter-spacing: 0; text-shadow: 0 3px 10px rgba(0,0,0,.24); }
+    .brand span { color: rgba(255,255,255,.86); font-size: 18px; }
+    .nav { display: grid; gap: 14px; }
+    .nav button {
+      width: 100%;
+      justify-content: flex-start;
+      text-align: left;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.24);
+      color: #fff;
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 12px;
+      align-items: center;
+      min-height: 78px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      box-shadow: 0 12px 22px rgba(15, 23, 42, .20), inset 0 1px 0 rgba(255,255,255,.42);
+    }
+    .nav button:hover { transform: translateY(-3px); background: rgba(255,255,255,.22); }
+    .nav button.active {
+      background: linear-gradient(135deg, #ffffff 0%, #fff6dc 100%);
+      border-color: rgba(255,255,255,.82);
+      color: #173f3a;
+      font-weight: 700;
+      box-shadow: 0 18px 34px rgba(15, 23, 42, .28), inset 0 1px 0 #fff;
+    }
+    .nav-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(255,236,175,.96));
+      color: #173f3a;
+      font-size: 22px;
+      font-weight: 800;
+      box-shadow: 0 10px 16px rgba(15, 23, 42, .18), inset 0 1px 0 #fff;
+    }
+    .nav-text { display: grid; gap: 2px; min-width: 0; }
+    .nav-text strong { font-size: 24px; line-height: 1.08; }
+    .nav-text small { font-size: 16px; line-height: 1.2; color: rgba(255,255,255,.78); }
+    .nav button.active .nav-text small { color: #53615f; }
+    .main { min-width: 0; padding: 24px 30px 46px; }
+    .topbar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,.84);
+      border: 1px solid rgba(217,225,231,.82);
+      border-radius: 20px;
+      padding: 16px 18px;
+      box-shadow: var(--deep-shadow);
+    }
+    .topbar h1 { margin: 0; font-size: 34px; line-height: 1.12; color: #173f3a; }
+    .topbar .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+    .panel-head { padding: 14px 16px; border-bottom: 1px solid var(--line); background: #fbfcfc; display: flex; gap: 12px; justify-content: space-between; align-items: center; }
+    .panel-head h2 { margin: 0; font-size: 19px; }
+    .panel-body { padding: 16px; }
+    .grid { display: grid; gap: 14px; }
+    .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .wide { grid-column: 1 / -1; }
+    .check-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+    .check-row label { display: inline-flex; grid-template-columns: none; align-items: center; gap: 8px; font-weight: 600; min-height: 38px; }
+    .check-row input { width: 18px; min-height: 18px; }
+    .metric { background: #fbfcfc; border: 1px solid var(--line); border-radius: 8px; padding: 12px; min-height: 80px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+    .metric strong { font-size: 24px; color: var(--brand-dark); }
+    .entry-shell { max-width: 1040px; margin: 0 auto; }
+    .entry-toolbar { border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; }
+    .entry-form {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0 0 8px 8px;
+      box-shadow: var(--shadow);
+      padding: 16mm 18mm;
+      color: #111;
+      font-family: "TH Sarabun New", "Sarabun", Tahoma, sans-serif;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+    .garuda-stamp { background-image: var(--garuda-url); background-repeat: no-repeat; background-position: center; background-size: contain; display: block; overflow: hidden; line-height: 0; }
+    .garuda-stamp img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+    .entry-official-head { position: relative; min-height: 27mm; }
+    .entry-garuda { position: absolute; left: 0; top: 0; width: 14.5mm; height: 12.6mm; }
+    .entry-title { text-align: center; font-weight: 700; font-size: 28px; padding-top: 8mm; }
+    .entry-line { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: flex-end; margin-bottom: 7px; }
+    .entry-line > b, .entry-line > span { flex: 0 0 auto; }
+    .entry-line input, .entry-line select, .entry-line textarea,
+    .person-entry input {
+      border: 0;
+      border-bottom: 1px dotted #222;
+      border-radius: 0;
+      background: #fffdf7;
+      min-height: 28px;
+      padding: 2px 5px;
+      box-shadow: none;
+    }
+    .entry-line input:focus, .entry-line select:focus, .entry-line textarea:focus,
+    .person-entry input:focus { box-shadow: 0 2px 0 rgba(15, 118, 110, .24); border-color: var(--brand); }
+    .entry-line textarea { min-height: 34px; resize: vertical; line-height: 1.25; }
+    .entry-flex { flex: 1 1 180px; min-width: 140px; }
+    .entry-wide { flex: 1 1 100%; min-width: 220px; }
+    .entry-xs { flex: 0 0 86px; }
+    .entry-sm { flex: 0 0 130px; }
+    .entry-md { flex: 1 1 260px; }
+    .entry-sep { border-top: 1px dashed #555; margin: 8px 0 10px; }
+    .entry-center { text-align: center; margin: 8px 0; }
+    .person-entry { display: grid; grid-template-columns: 28px minmax(160px, 1fr) 58px minmax(150px, 1fr); gap: 8px; align-items: end; margin-bottom: 6px; padding-left: 16px; }
+    .entry-check { display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; margin: 6px 0; }
+    .entry-check input[type="checkbox"] { width: 18px; min-height: 18px; margin-top: 5px; }
+    .entry-check .entry-line { margin: 0; }
+    .entry-comment-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: 12mm; margin-top: 13mm; align-items: stretch; }
+    .entry-comment-box { border: 1.4px solid #111; min-height: 47mm; padding: 4mm; background: #fff; display: grid; align-content: start; gap: 2mm; }
+    .entry-comment-title { text-align: center; font-weight: 700; text-decoration: underline; margin-bottom: 1mm; }
+    .entry-comment-box .entry-line { margin-bottom: 2px; }
+    .entry-comment-box input, .entry-comment-box select, .entry-comment-box textarea {
+      border: 0;
+      border-bottom: 1px dotted #222;
+      border-radius: 0;
+      background: #fff;
+      min-height: 26px;
+      padding: 1px 4px;
+      box-shadow: none;
+    }
+    .entry-comment-box textarea { border: 1px dotted #777; min-height: 19mm; resize: vertical; line-height: 1.25; width: 100%; }
+    .entry-comment-note { font-size: 15px; line-height: 1.28; }
+    .entry-status-line { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-items: end; }
+    .entry-status-line label { display: grid; gap: 3px; font-weight: 600; }
+    .entry-decision-options { display: flex; justify-content: center; gap: 18mm; align-items: center; margin: 1mm 0 2mm; }
+    .entry-decision-options label { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+    .entry-decision-options input[type="checkbox"] { width: 17px; min-height: 17px; padding: 0; border: 1.2px solid #111; }
+    .records-tools { display: grid; grid-template-columns: minmax(220px, 1fr) 170px 145px 145px 160px; gap: 10px; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px 9px; text-align: left; vertical-align: top; line-height: 1.35; }
+    th { background: #eef5f4; color: #21413d; font-weight: 700; position: sticky; top: 0; z-index: 1; }
+    .table-wrap { overflow: auto; max-height: 520px; border: 1px solid var(--line); border-radius: 8px; }
+    .status { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 8px; border-radius: 999px; font-weight: 700; white-space: nowrap; }
+    .status.draft { background: #eef2f6; color: #475467; }
+    .status.pending { background: #fff7df; color: #8a5a00; }
+    .status.approved { background: #dcfae6; color: #067647; }
+    .status.rejected { background: #fee4e2; color: #b42318; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .dash-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .bars { display: grid; gap: 10px; }
+    .bar-row { display: grid; grid-template-columns: 130px minmax(120px, 1fr) 90px; gap: 10px; align-items: center; }
+    .bar-track { height: 18px; background: #eef2f6; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--brand); border-radius: 999px; min-width: 2px; }
+    .preview { background: #f0f2f4; border: 1px solid var(--line); border-radius: 8px; padding: 18px; max-width: 980px; margin: 0 auto; box-shadow: var(--shadow); overflow: auto; }
+    .official-form {
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      background: #fff;
+      color: #111;
+      padding: 10mm 12mm 9mm;
+      overflow: hidden;
+      page-break-inside: avoid;
+      font-family: "TH Sarabun New", "Sarabun", Tahoma, sans-serif;
+      font-size: 12.2pt;
+      line-height: 1.04;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, .14);
+    }
+    .official-form * { box-sizing: border-box; }
+    .official-scale { transform: scale(var(--page-scale, 1)); transform-origin: top left; width: calc(100% / var(--page-scale, 1)); }
+    .official-head { position: relative; min-height: 17mm; }
+    .official-garuda { position: absolute; left: 0; top: 0; width: 10.5mm; height: 9.2mm; }
+    .official-title { text-align: center; font-weight: 700; font-size: 18pt; padding-top: 6.3mm; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+    .right-block { justify-self: end; min-width: 72mm; }
+    .official-row { display: flex; align-items: baseline; gap: 1.4mm; min-height: 4.7mm; min-width: 0; flex-wrap: wrap; }
+    .official-center { text-align: center; }
+    .official-indent { padding-left: 18mm; }
+    .dash-line { border-top: 1px dashed #777; margin: 1.5mm 0 2mm; height: 0; }
+    .fill { flex: 1; border-bottom: 1px dotted #333; min-height: 4.6mm; }
+    .fill.short { flex: 0 0 24mm; }
+    .fill.med { flex: 0 0 45mm; }
+    .fill.long { flex: 1 1 auto; }
+    .fill-text { border-bottom: 0; min-height: 3.8mm; padding: 0 .9mm; white-space: normal; overflow: visible; overflow-wrap: break-word; word-break: normal; hyphens: none; }
+    .fill-text.blank { border-bottom: 1px dotted #333; }
+    .check-line { display: grid; grid-template-columns: 5.5mm 1fr; column-gap: 2mm; align-items: start; min-height: 4.9mm; min-width: 0; }
+    .check-line > div { min-width: 0; overflow-wrap: break-word; }
+    .box { width: 3.8mm; height: 3.8mm; border: 1px solid #111; display: inline-flex; align-items: center; justify-content: center; margin-top: .5mm; font-size: 8.5pt; line-height: 1; }
+    .person-row { display: grid; grid-template-columns: 8mm 1fr 14mm 1fr; column-gap: 1.7mm; align-items: baseline; min-height: 4.8mm; min-width: 0; padding-left: 8mm; }
+    .signature { text-align: center; margin-top: 2.5mm; }
+    .comment-grid { display: grid; grid-template-columns: 1fr 1.16fr; gap: 8mm; margin-top: 3mm; }
+    .comment-box { border: 1.2px solid #111; min-height: 42mm; padding: 3mm; overflow: hidden; min-width: 0; }
+    .comment-title { text-align: center; text-decoration: underline; }
+    .director-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; justify-items: center; margin: 3mm 0; }
+    .small { font-size: 11pt; }
+    .toast { position: fixed; right: 18px; bottom: 18px; background: #173f3a; color: #fff; border-radius: 8px; padding: 12px 14px; box-shadow: var(--shadow); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 10; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { height: auto; position: static; border-right: 0; border-bottom: 1px solid var(--line); }
+      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav button { grid-template-columns: 44px 1fr; min-height: 70px; padding: 10px; justify-content: center; text-align: left; }
+      .nav-mark { width: 44px; height: 44px; border-radius: 14px; font-size: 18px; }
+      .nav-text strong { font-size: 21px; }
+      .nav-text small { font-size: 14px; }
+      .cols-2, .cols-3, .cols-4, .dash-grid, .records-tools, .entry-comment-grid, .entry-status-line { grid-template-columns: 1fr; }
+      .entry-form { padding: 14mm 10mm; }
+      .person-entry { grid-template-columns: 24px 1fr; padding-left: 0; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      html, body { width: 210mm; height: 297mm; margin: 0 !important; overflow: hidden !important; background: #fff; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .sidebar, .topbar, .panel:not(.print-panel), .panel.print-panel > .panel-head, .toast { display: none !important; }
+      .app { display: block; width: 210mm; height: 297mm; overflow: hidden; }
+      .main { padding: 0 !important; width: 210mm; height: 297mm; overflow: hidden; }
+      .view { display: none !important; }
+      #previewView { display: block !important; position: fixed; left: 0; top: 0; width: 210mm; height: 297mm; overflow: hidden; }
+      .panel.print-panel, .panel.print-panel .panel-body { display: block !important; border: 0 !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #fff !important; width: 210mm; height: 297mm; }
+      .preview { border: 0; box-shadow: none; max-width: none; width: 210mm; height: 297mm; margin: 0; padding: 0; overflow: hidden; background: #fff; }
+      .official-form { box-shadow: none; width: 210mm; height: 297mm; margin: 0; overflow: hidden; page-break-before: avoid; page-break-after: avoid; page-break-inside: avoid; break-before: avoid; break-after: avoid; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>ขออนุญาตไปราชการ</strong>
+        <span>โรงพยาบาลพรหมพิราม</span>
+      </div>
+      <nav class="nav" aria-label="เมนูหลัก">
+        <button class="active" data-view="formView" type="button"><span class="nav-mark">01</span><span class="nav-text"><strong>แบบฟอร์ม</strong><small>กรอกข้อมูลคำขอ</small></span></button>
+        <button data-view="recordsView" type="button"><span class="nav-mark">02</span><span class="nav-text"><strong>รายการ</strong><small>ค้นหา แก้ไข ส่งออก</small></span></button>
+        <button data-view="dashboardView" type="button"><span class="nav-mark">03</span><span class="nav-text"><strong>Dashboard</strong><small>สรุปสถานะและค่าใช้จ่าย</small></span></button>
+        <button data-view="previewView" type="button"><span class="nav-mark">04</span><span class="nav-text"><strong>พิมพ์</strong><small>ดูตัวอย่าง A4 หน้าเดียว</small></span></button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1 id="pageTitle">แบบฟอร์มขออนุญาตไปราชการ</h1>
+        <div class="actions">
+          <button class="ghost" id="newBtn" type="button">รายการใหม่</button>
+          <button class="primary" id="saveBtn" type="button">บันทึก</button>
+          <button class="warning" id="blankDocxBtn" type="button">DOCX แบบฟอร์มเปล่า</button>
+          <button class="primary" id="docxBtn" type="button">ส่งออก DOCX</button>
+        </div>
+      </div>
+
+      <section class="view active" id="formView">
+        <div class="entry-shell">
+          <div class="panel-head entry-toolbar">
+            <h2>กรอกข้อมูลบนแบบฟอร์ม</h2>
+            <span id="editingBadge"></span>
+          </div>
+          <div class="entry-form">
+            <div class="entry-official-head">
+              <span class="entry-garuda garuda-stamp"><img class="garuda-img" alt="ตราครุฑ"></span>
+              <div class="entry-title">บันทึกข้อความ</div>
+            </div>
+
+            <div class="entry-line">
+              <b>ส่วนราชการ</b><input class="entry-md" id="agency" value="โรงพยาบาลพรหมพิราม">
+              <b>กลุ่มงาน</b><input class="entry-sm" id="dept" value="ยุทธศาสตร์">
+            </div>
+            <div class="entry-line">
+              <b>ที่</b><input class="entry-sm" id="docNo" value="พล ๐๕๓๓.๓๐๑">
+              <b>/</b><input class="entry-xs" id="suffix" value="พิเศษ">
+              <b>วันที่</b><input class="entry-sm" id="docDate" type="date">
+            </div>
+            <div class="entry-line"><b>เรื่อง</b><input class="entry-wide" id="subject" value="ขออนุญาตไปราชการ"></div>
+            <div class="entry-sep"></div>
+            <div class="entry-line"><b>เรียน</b><input class="entry-wide" id="to" value="ผู้อำนวยการโรงพยาบาลพรหมพิราม"></div>
+
+            <div class="entry-line">
+              <span>ข้าพเจ้า</span><input class="entry-md" id="reqName" value="น.ส.สกาวพรรณ อวัสดาถาวร">
+              <span>ตำแหน่ง</span><input class="entry-md" id="reqPos" value="นักสาธารณสุขชำนาญการ">
+            </div>
+            <div class="entry-line">
+              <span>ขออนุญาตไปราชการเพื่อเข้ารับการ</span>
+              <select class="entry-sm" id="kind">
+                <option>ประชุม</option>
+                <option>อบรม</option>
+                <option>สัมมนา</option>
+                <option>อบรม/ประชุม</option>
+                <option>นิเทศงาน</option>
+              </select>
+              <span>เรื่อง</span><textarea class="entry-wide" id="topic">ขอเชิญเข้าร่วมประชุมทบทวนแผนพัฒนาสาธารณสุขพิษณุโลก ประจำปีงบประมาณ พ.ศ.2570</textarea>
+            </div>
+            <div class="entry-line">
+              <span>หน่วยงานผู้จัด</span><input class="entry-md" id="organizer" value="สำนักงานสาธารณสุขจังหวัดพิษณุโลก">
+              <span>สถานที่</span><textarea class="entry-md" id="venue">168 HEAVEN ดิ อัยยารินทร์ รีสอร์ท อำเภอเมือง จังหวัดพิษณุโลก</textarea>
+            </div>
+            <div class="entry-line">
+              <span>ระหว่างวันที่</span><input class="entry-sm" id="dateFrom" type="date">
+              <span>ถึงวันที่</span><input class="entry-sm" id="dateTo" type="date">
+              <span>รวม</span><input class="entry-xs" id="days" readonly>
+              <span>วัน</span>
+            </div>
+            <div class="entry-line"><span>วัตถุประสงค์</span><textarea class="entry-wide" id="purpose">เพื่อร่วมกันทบทวนสถานการณ์ ปัญหาสาธารณสุข และบูรณาการการดำเนินงานของหน่วยงาน</textarea></div>
+
+            <div class="entry-center">ทั้งนี้ มีผู้เข้าร่วมประชุมกับข้าพเจ้าด้วย ดังนี้</div>
+            <div class="person-entry"><span>1.</span><input id="person1Name" value="นางดวงพร ผลดีนานา"><span>ตำแหน่ง</span><input id="person1Pos" value="นักสาธารณสุขชำนาญการ"></div>
+            <div class="person-entry"><span>2.</span><input id="person2Name" value="นายพิเชษฐ์ วีระกิจพานิช"><span>ตำแหน่ง</span><input id="person2Pos" value="นักสาธารณสุขชำนาญการ"></div>
+            <div class="person-entry"><span>3.</span><input id="person3Name" value="นายเจริญ คลังเอี่ยม"><span>ตำแหน่ง</span><input id="person3Pos" value="นักพัฒนาระบบบริการชำนาญการ"></div>
+            <div class="entry-line"><span>จำนวนผู้ร่วมเดินทาง</span><input class="entry-xs" id="personsCount" type="number" min="0" value="3"><span>คน</span></div>
+
+            <div>ในการไปราชการครั้งนี้ ขออนุญาต</div>
+            <div class="entry-check">
+              <input id="useHosp" type="checkbox">
+              <div class="entry-line">
+                <span>เบิกค่าใช้จ่ายจากเงินบำรุงโรงพยาบาล ค่าลงทะเบียน</span><input class="entry-xs" id="feeReg" type="number" min="0" step="1" value="0">
+                <span>บาท ค่าที่พัก</span><input class="entry-xs" id="feeStay" type="number" min="0" step="1" value="0">
+                <span>บาท ค่าเบี้ยเลี้ยง</span><input class="entry-xs" id="feeAllow" type="number" min="0" step="1" value="0"><span>บาท</span>
+              </div>
+            </div>
+            <div class="entry-check">
+              <input id="useHost" type="checkbox">
+              <div class="entry-line"><span>เบิกค่าใช้จ่ายต่าง ๆ จากส่วนราชการผู้จัด</span></div>
+            </div>
+            <div class="entry-check">
+              <input id="useFare" type="checkbox">
+              <div class="entry-line">
+                <span>เบิกค่าพาหนะโดยสาร รถประจำทาง</span><input class="entry-xs" id="fareBus" type="number" min="0" step="1" value="0">
+                <span>รถไฟ</span><input class="entry-xs" id="fareTrain" type="number" min="0" step="1" value="0">
+                <span>เครื่องบิน</span><input class="entry-xs" id="fareAir" type="number" min="0" step="1" value="0">
+                <span>แท็กซี่/รับจ้าง</span><input class="entry-xs" id="fareTaxi" type="number" min="0" step="1" value="0">
+              </div>
+            </div>
+            <div class="entry-check">
+              <input id="useGovCar" type="checkbox">
+              <div class="entry-line">
+                <span>ขอใช้รถยนต์ของทางราชการ หมายเลขทะเบียน</span><input class="entry-sm" id="govPlate">
+                <span>พนักงานขับรถ</span><input class="entry-sm" id="govDriver">
+                <span>ค่าน้ำมัน</span><input class="entry-xs" id="govFuel" type="number" min="0" step="1" value="0">
+                <span>ค่าทางด่วน</span><input class="entry-xs" id="govToll" type="number" min="0" step="1" value="0">
+              </div>
+            </div>
+            <div class="entry-check">
+              <input id="useOwnCar" type="checkbox" checked>
+              <div>
+                <div class="entry-line">
+                  <span>ขอใช้รถยนต์ส่วนบุคคล หมายเลขทะเบียน</span><input class="entry-sm" id="ownPlate" value="ขต 2468 พิษณุโลก">
+                  <span>อัตรากิโลเมตรละ</span><input class="entry-xs" id="ownRate" type="number" min="0" step="0.01" value="4"><span>บาท</span>
+                </div>
+                <div class="entry-line">
+                  <span>เดินทางจาก</span><input class="entry-md" id="ownFrom" value="โรงพยาบาลพรหมพิราม">
+                  <span>ถึง</span><input class="entry-md" id="ownTo" value="168 HEAVEN ดิ อัยยารินทร์ รีสอร์ท อำเภอเมือง จังหวัดพิษณุโลก">
+                  <span>ระยะทางไป-กลับ</span><input class="entry-xs" id="ownKm" type="number" min="0" step="1" value="108"><span>กม.</span>
+                </div>
+                <div class="entry-line">
+                  <span>ออกเดินทางวันที่</span><input class="entry-sm" id="depDate" type="date">
+                  <span>เวลา</span><input class="entry-xs" id="depTime" type="time" value="08:00">
+                  <span>กลับวันที่</span><input class="entry-sm" id="retDate" type="date">
+                  <span>เวลา</span><input class="entry-xs" id="retTime" type="time" value="18:00">
+                  <span>กลับเข้าปฏิบัติงานวันที่</span><input class="entry-sm" id="workDate" type="date">
+                </div>
+              </div>
+            </div>
+
+            <div class="entry-line"><span>มอบหมายงานในหน้าที่รับผิดชอบให้</span><input class="entry-md" id="delegate" value="น.ส.กัญญารัตน์ มุขแจ้ง"><span>ปฏิบัติงานแทน</span></div>
+            <div class="entry-comment-grid">
+              <div class="entry-comment-box">
+                <div class="entry-comment-title">ความเห็นของหัวหน้ากลุ่มงาน / ฝ่าย / งาน</div>
+                <div class="entry-line">
+                  <span>ขอไปประชุมครั้งที่</span><input class="entry-xs" id="meetingNo" type="number" min="0" value="1"><span>เห็นควรอนุญาต</span>
+                </div>
+                <div class="entry-line">
+                  <span>งบประมาณคงเหลือ</span><input class="entry-sm" id="budgetLeft" type="number" min="0" step="1" value="15000"><span>บาท</span>
+                </div>
+                <div class="entry-comment-note">ตรวจสอบแล้ว การขออนุญาตไปราชการครั้งนี้อยู่ในแผนพัฒนาบุคลากร และมีงบประมาณคงเหลือเพียงพอ</div>
+                <div class="entry-line">
+                  <span>ลงชื่อ</span><input class="entry-md" id="hrSign" value="งานพัฒนาบุคลากร">
+                </div>
+                <input id="status" type="hidden" value="pending">
+              </div>
+
+              <div class="entry-comment-box">
+                <div class="entry-comment-title">ความเห็นผู้อำนวยการโรงพยาบาลพรหมพิราม</div>
+                <input id="decision" type="hidden" value="">
+                <div class="entry-decision-options">
+                  <label><input id="decisionApproved" type="checkbox">อนุมัติ</label>
+                  <label><input id="decisionRejected" type="checkbox">ไม่อนุมัติ</label>
+                </div>
+                <div class="entry-status-line">
+                  <label>วันที่พิจารณา<input id="directorDate" type="date"></label>
+                </div>
+                <label>หมายเหตุผู้อำนวยการ<textarea id="directorNote"></textarea></label>
+                <div class="entry-line">
+                  <span>ลงชื่อ</span><input class="entry-md" id="directorSign" placeholder="ผู้อำนวยการโรงพยาบาล">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="recordsView">
+        <div class="panel">
+          <div class="panel-head"><h2>รายการคำขอ</h2><span id="recordCount"></span></div>
+          <div class="panel-body">
+            <div class="records-tools">
+              <input id="searchBox" placeholder="ค้นหาชื่อ หัวข้อ สถานที่ หรือสถานะ">
+              <select id="statusFilter">
+                <option value="">ทุกสถานะ</option>
+                <option value="draft">ร่าง</option>
+                <option value="pending">รอพิจารณา</option>
+                <option value="approved">อนุมัติ</option>
+                <option value="rejected">ไม่อนุมัติ</option>
+              </select>
+              <button id="exportCsvBtn" type="button">ส่งออก CSV</button>
+              <button id="importJsonBtn" type="button">นำเข้า JSON</button>
+              <button id="exportJsonBtn" type="button">สำรองข้อมูล JSON</button>
+              <input id="importJsonFile" type="file" accept="application/json,.json" hidden>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>วันที่</th>
+                    <th>ผู้ขอ</th>
+                    <th>หัวข้อ</th>
+                    <th>สถานะ</th>
+                    <th>ยอดขอเบิก</th>
+                    <th>จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="dashboardView">
+        <div class="dash-grid" id="dashMetrics"></div>
+        <div class="panel">
+          <div class="panel-head"><h2>สถานะคำขอ</h2></div>
+          <div class="panel-body bars" id="statusBars"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>ยอดค่าใช้จ่ายตามหมวด</h2></div>
+          <div class="panel-body bars" id="expenseBars"></div>
+        </div>
+      </section>
+
+      <section class="view print-panel" id="previewView">
+        <div class="panel print-panel">
+          <div class="panel-head"><h2>ตัวอย่างแบบฟอร์ม</h2><button id="printBtn" type="button">พิมพ์</button></div>
+          <div class="panel-body"><div class="preview" id="previewDoc"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "travel_permission_requests_v3";
+    const GARUDA_PNG_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAADcAAAAwCAYAAAC13uL+AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAkISURBVGhD3Zl36I5RFMdfe29C9sgIIYTsTfbeu4xsEbIjMjKSP2xFmSF/KEKyySglhexR9ua/q8/JeX73vfd516/Ur/eP7/vce557z3POvWfd+0aMMZF0hUdIJ3iEdIJHOH78uBkzZoxx6VkNmzZtMgMGDIgrZ1Rnx44dJhKJGJ7uwKyIZs2amTZt2phPnz6Fyhs0zp07Z0aNGiXKvXnzJnRwVsP58+dF3unTp4fKGzQGDx4sO8Zgd1BWxfPnz0XeSpUqmSdPnnhyZzQiERn4P5T7+vXrf+H78OFD4Ttr1izz/v17j7/8bNy40RQtWtQQTBjM0x2o2LNnj1m6dKm5e/duzDEucP5UlDt48KB8Q+G+V8ycOVP4DhkyRBR038tP5cqVhcn27dvNunXrzPr164OBKL58+XKza9cuU6JECWFWqlQpeZYtW9ZjGIb69euL4+/fvz/h+H379gnvQoUKmYYNGwbfQ4YmTZqYq1evBjxat25tZsyYIXIw1uUlP9euXRPlOnXqZMqUKSN49OiRDO7du7fp37+/KViwoHyoS5cupmLFimbevHnm5cuXHsMw5M2bV3Z67ty5SY3//v27GT16tGnevHkQ5Pgui3Ts2DFz8eJFSQNVq1YVfjlz5gxdaPk5ffq0mTJlijDRoIKCvHv79q1ZuXKlOXLkiJk/f74ZPny4wZFdRmH49u2badCggaw8T3iOHz8+qbmAING2bVtz4cIFmYP18ES+2rVrm4EDB5ps2bKZHj16yOK78+UH02MnEABs2bJFFCxZsqTBx54+fSoTeff582ePSSy8evVKLAJemH6LFi0yVSCsXbtW5kyePNmon2FR6svIHubTGY1/+Y0nAlWvXl3a4PXr1zIx2SDCivfp08d07tzZ1KxZU3iw0jxr1aol74A7LxY0j40dOzaQiXa1atXEbEkF7LA7L6MRiYgvHThwwOTPnz9gAvA5Vhyz/P37t8fEBTkT/zh06FAUHwVC8UQod64LLEVlcPlMmDBBzJI2SrpzMxr/JrDt9HPnzm3u3bvnMYwXmgHKq5nYaNWqVVR/2LBhspjufBfZs2f3eAHMEjPVflzl8AkdiG/hhy5DwDiXiQt3TtOmTSVkE1BseiLlyHcuLwUy2n3KR3d+0Ni2bZvHIAwImi9fPnP//n2PmcJdmLDVxzJYfXcuePfunVjQ3r17ZVHIZ+58G7GCVNAgKupgVpi84jL5+PGjMCEPNWrUSNKDyxAQLBhfoECBYC6R1+XnzlOwOHfu3Anes5D2PHy2ZcuWQT9h4Yzg9erVCyawsq4wMHzw4EGgIExZNXD79u3gA6pcrly5pDIh2dIvUqSIJF/aRGMd//jxYyn54MN4u/w7ceJEIItWLDZ69eplNm/eHF85QPFJSGXnbJvu2rVr0A4LuVq9oPyyZcsk3Ls+oWjXrp08ec9YYKcdm2+saMsCKP8lS5Z48oQqBwjjTCpevLhUKwhKn5ylzFFCTRRo6ujZs2cgqD5Lly4taUGhPOCfI0cOiXI1atQIaMrzzJkznlJA8yZgR1354ypHomYnKJOqVKkiuYjaDWb4DcLSZncp24SJteqYEVFwxIgREnygq+m2b9/eUGfCE+Upy5ijlYaa6tSpUz2lAH6OcsgH78aNG6emHKAIpchVpjdv3jR16tSRNicD2x+fPXsWtFVQ5tMvXLiwKKLv2WE7UNWtWzdKORd58uQJ2hQX2ub7vHPlduERgheRiKwyNs1ZTxlrRRAGgg11KCE81ni7r9/S+jMeMF/G4fP0p02blnnlCL+sPAxHjhwpCtLGJ8lz7seBjmE+0fTFixeyU/hi+fLlzaJFiwyXOghKWfXnzx9R1uVHqNfcCE/cAxCF+X737t0TKhZXOXD06FGJbjdu3JDKxFUmDGGJGd/ET9yjEqcGe26FChXkWaxYMTnPKZ2UQ5+jDT5Pkne/EQaP4II6kTy1Zs0aCb84PRW5XaHjAwhGIKGv4Zlk7PJTfPjwITAxwOKRB1kEoqYevwB5bPfu3XKdYCf3RPAIYeCkjnlMmjRJak6E37BhQ1T+U9gC47P0edInrdAnyrnzFHyHMZgvUDrKpXrl6BFiAdPCiVlZfATfWrBggfgBlYidiHmv57cwYHZueeeWZ0RWLIJx3L38/PkzJcWAR0gGJ0+e9AS2ofkKn6LonTNnjtC5eKIQ5g6EqwN3novr16+nrJANj5AIBBk+3K1btyAh02cHtQwDtr9xl/Llyxfz48eP0PDfsWNHs2LFCmlD1/sR+uS3X79+ZUpJjxAPKERdZ5uUMPmnjFtPUsVQOxLuGUdyx5/69u0bNQ4z1txIoKJM02s7zmk6P1V4hFgYOnRolEAK/IdIR07kDwk1wWRBjUpwosRj8VAeH+adHZHDrssTwSPEAgpgLkQznJ/V1SjIO/yMA+bq1aujcpQNQry2uQnTKoOjDLyoKeHr3uGgOCnJlSkRPEIsoACVipoehTC1IW1Wmp2lArl8+bLZuXOn1KMoSVJnjD6pTRlLnuMWGcWoWPA7VQY/xufKlSsnfe5Kk73QteERYgGlqMi1zqQM0mDCLvA8e/as+B5HIophhNe8xzx8kEWCDj+tXSnPVHFVkB3UO0r8PJXkrfAI8cDqIhx+hkJ61lPzBFz/LVy4UN4PGjRIaETCxYsXiw9RPrFTEydOjPJPIq1dfvFEOc6RuEOyJZcNjxAPly5dCnbOvkcMu5JQOjukwQBl6LvXfMA+edh3L0TNVCsThUdIBP78oIbk3jHsVgrTInLSJoRjUuQ45lLl2GPZXa1HFR06dJCTOXR81/1+KvAIqYKkq6uuJwI1VwU0/Y/BpjMPmp03MxPyY8EjZAacvYiAtPlfzVYgEfAvFN+6dav0V61a5SmnN2iHDx/23sWDRwgDB0X+XAfkMa4AqSj0Ortfv37y/xvOT7DQ6JkIhHoqGA6y+DPpAzr8OUfyXf62unXrllQrmCsJ35UvFjxCGPggQpDnODCeOnVK/ubChwjRs2fPltMzx5Jx48aJUMzRUB4LBBf4w4MojJ9RlF+5ckVqTO5tuJekgNaFjHeV58IjpBM8QjrBI6QTPEI64S/D57ywMbUSnAAAAABJRU5ErkJggg==";
+    const formIds = ["agency","dept","docNo","suffix","docDate","subject","to","reqName","reqPos","kind","topic","organizer","venue","dateFrom","dateTo","purpose","personsCount","person1Name","person1Pos","person2Name","person2Pos","person3Name","person3Pos","useHosp","useHost","useFare","useGovCar","useOwnCar","feeReg","feeStay","feeAllow","fareBus","fareTrain","fareAir","fareTaxi","govFuel","govToll","govPlate","govDriver","ownPlate","ownFrom","ownTo","ownKm","ownRate","depDate","depTime","retDate","retTime","workDate","delegate","meetingNo","budgetLeft","hrSign","status","decision","directorNote","directorSign","directorDate"];
+    const numberFields = ["feeReg","feeStay","feeAllow","fareBus","fareTrain","fareAir","fareTaxi","govFuel","govToll","ownKm","ownRate","budgetLeft","personsCount","meetingNo"];
+    let records = [];
+    let editingId = null;
+    const $ = (id) => document.getElementById(id);
+    const baht = (n) => new Intl.NumberFormat("th-TH", { maximumFractionDigits: 0 }).format(Number(n) || 0);
+    const today = () => new Date().toISOString().slice(0, 10);
+    const sum = (...values) => values.reduce((a, b) => a + (Number(b) || 0), 0);
+
+    function newId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+      return "REQ-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+    }
+
+    function normalizeRecord(record = {}) {
+      const base = blankRecord();
+      const normalized = { ...base, ...record };
+      normalized.id = normalized.id || newId();
+      for (const id of numberFields) normalized[id] = Number(normalized[id]) || 0;
+      syncCompanionFields(normalized);
+      if (!normalized.personsCount) normalized.personsCount = getCompanions(normalized).filter((person) => person.name || person.pos).length;
+      ["useHosp","useHost","useFare","useGovCar","useOwnCar"].forEach((id) => normalized[id] = Boolean(normalized[id]));
+      normalized.status = ["draft", "pending"].includes(normalized.status) ? normalized.status : "draft";
+      normalized.decision = ["", "approved", "rejected"].includes(normalized.decision) ? normalized.decision : "";
+      normalized.days = calcDays(normalized.dateFrom, normalized.dateTo);
+      normalized.createdAt = normalized.createdAt || new Date().toISOString();
+      normalized.updatedAt = normalized.updatedAt || normalized.createdAt;
+      return normalized;
+    }
+
+    function validateRecord(record) {
+      const checks = [
+        ["reqName", "กรุณากรอกชื่อผู้ขอ"],
+        ["topic", "กรุณากรอกหัวข้อ/เรื่อง"],
+        ["dateFrom", "กรุณากรอกวันที่เริ่ม"],
+        ["dateTo", "กรุณากรอกวันที่สิ้นสุด"]
+      ];
+      for (const [field, message] of checks) {
+        if (!String(record[field] || "").trim()) return { ok: false, field, message };
+      }
+      const from = parseDateSafe(record.dateFrom);
+      const to = parseDateSafe(record.dateTo);
+      if (from && to && to < from) return { ok: false, field: "dateTo", message: "วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่ม" };
+      return { ok: true };
+    }
+
+    function parseDateSafe(value) {
+      if (!value) return null;
+      const d = new Date(value + "T00:00:00");
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function dateThai(value) {
+      const d = parseDateSafe(value);
+      return d ? d.toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" }) : "-";
+    }
+
+    function dateShort(value) {
+      const d = parseDateSafe(value);
+      return d ? d.toLocaleDateString("th-TH", { year: "numeric", month: "2-digit", day: "2-digit" }) : "-";
+    }
+
+    function calcDays(from, to) {
+      const a = parseDateSafe(from);
+      const b = parseDateSafe(to);
+      if (!a || !b) return "";
+      return Math.max(0, Math.round((b - a) / 86400000) + 1);
+    }
+
+    function parseCompanion(text) {
+      const raw = String(text || "").trim();
+      if (!raw) return { name: "", pos: "" };
+      const pipe = raw.split("|");
+      if (pipe.length > 1) return { name: pipe[0].trim(), pos: pipe.slice(1).join("|").trim() };
+      const paren = raw.match(/^(.*?)\s*\((.*?)\)\s*$/);
+      if (paren) return { name: paren[1].trim(), pos: paren[2].trim() };
+      return { name: raw, pos: "" };
+    }
+
+    function getCompanions(record = {}) {
+      const explicit = [1, 2, 3].map((index) => ({
+        name: String(record[`person${index}Name`] || "").trim(),
+        pos: String(record[`person${index}Pos`] || "").trim()
+      }));
+      if (explicit.some((person) => person.name || person.pos)) return explicit;
+      const legacy = String(record.persons || "").split(/[;\n]+/).map(parseCompanion).filter((person) => person.name || person.pos);
+      while (legacy.length < 3) legacy.push({ name: "", pos: "" });
+      return legacy.slice(0, 3);
+    }
+
+    function companionSummary(record = {}) {
+      return getCompanions(record)
+        .filter((person) => person.name || person.pos)
+        .map((person) => person.pos ? `${person.name} | ${person.pos}` : person.name)
+        .join("; ");
+    }
+
+    function syncCompanionFields(record = {}) {
+      const companions = getCompanions(record);
+      companions.forEach((person, index) => {
+        record[`person${index + 1}Name`] = person.name;
+        record[`person${index + 1}Pos`] = person.pos;
+      });
+      record.persons = companionSummary(record);
+      return record;
+    }
+
+    function statusText(code) {
+      return ({ draft: "ร่าง", pending: "รอพิจารณา", approved: "อนุมัติ", rejected: "ไม่อนุมัติ" }[code]) || "ร่าง";
+    }
+
+    function finalStatus(record) {
+      if (record.decision === "approved") return "approved";
+      if (record.decision === "rejected") return "rejected";
+      return record.status || "draft";
+    }
+
+    function syncDecisionBoxes(value = $("decision")?.value || "") {
+      const approved = $("decisionApproved");
+      const rejected = $("decisionRejected");
+      if (approved) approved.checked = value === "approved";
+      if (rejected) rejected.checked = value === "rejected";
+    }
+
+    function syncDecisionFromBoxes(changedValue = "") {
+      const decision = $("decision");
+      const approved = $("decisionApproved");
+      const rejected = $("decisionRejected");
+      if (!decision || !approved || !rejected) return;
+      if (changedValue === "approved" && approved.checked) rejected.checked = false;
+      if (changedValue === "rejected" && rejected.checked) approved.checked = false;
+      decision.value = approved.checked ? "approved" : (rejected.checked ? "rejected" : "");
+    }
+
+    function totals(record = readForm()) {
+      const hosp = record.useHosp ? sum(record.feeReg, record.feeStay, record.feeAllow) : 0;
+      const fare = record.useFare ? sum(record.fareBus, record.fareTrain, record.fareAir, record.fareTaxi) : 0;
+      const gov = record.useGovCar ? sum(record.govFuel, record.govToll) : 0;
+      const own = record.useOwnCar ? (Number(record.ownKm) || 0) * (Number(record.ownRate) || 0) : 0;
+      return { hosp, fare, gov, own, all: hosp + fare + gov + own };
+    }
+
+    function readForm() {
+      syncDecisionFromBoxes();
+      const record = {};
+      for (const id of formIds) {
+        const el = $(id);
+        if (!el) continue;
+        record[id] = el.type === "checkbox" ? el.checked : String(el.value ?? "").trim();
+      }
+      for (const id of numberFields) record[id] = Number(record[id]) || 0;
+      record.persons = companionSummary(record);
+      if (!record.personsCount) record.personsCount = getCompanions(record).filter((person) => person.name || person.pos).length;
+      record.id = editingId || newId();
+      record.days = calcDays(record.dateFrom, record.dateTo);
+      record.updatedAt = new Date().toISOString();
+      record.createdAt = records.find((item) => item.id === editingId)?.createdAt || record.updatedAt;
+      return record;
+    }
+
+    function writeForm(record) {
+      record = syncCompanionFields({ ...record });
+      for (const id of formIds) {
+        const el = $(id);
+        if (!el) continue;
+        if (el.type === "checkbox") el.checked = Boolean(record[id]);
+        else el.value = record[id] ?? "";
+      }
+      editingId = record.id || null;
+      $("editingBadge").textContent = editingId ? "กำลังแก้ไข: " + (record.reqName || record.id) : "";
+      syncDecisionBoxes(record.decision || "");
+      refreshAll();
+    }
+
+    function seedDates() {
+      $("docDate").value ||= today();
+      $("dateFrom").value ||= today();
+      $("dateTo").value ||= today();
+      $("depDate").value ||= today();
+      $("retDate").value ||= today();
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      $("workDate").value ||= tomorrow.toISOString().slice(0, 10);
+    }
+
+    function resetForm() {
+      editingId = null;
+      $("editingBadge").textContent = "";
+      document.querySelectorAll("input, textarea, select").forEach((el) => {
+        if (el.id === "searchBox" || el.id === "statusFilter") return;
+        if (el.type === "checkbox") el.checked = false;
+        else if (el.tagName === "SELECT") el.selectedIndex = 0;
+        else el.value = "";
+      });
+      $("agency").value = "โรงพยาบาลพรหมพิราม";
+      $("dept").value = "ยุทธศาสตร์";
+      $("docNo").value = "พล ๐๕๓๓.๓๐๑";
+      $("suffix").value = "พิเศษ";
+      $("subject").value = "ขออนุญาตไปราชการ";
+      $("to").value = "ผู้อำนวยการโรงพยาบาลพรหมพิราม";
+      $("status").value = "pending";
+      $("ownRate").value = 4;
+      seedDates();
+      refreshAll();
+    }
+
+    function saveRecords() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      } catch (err) {
+        alert("ไม่สามารถบันทึกลงเครื่องนี้ได้ กรุณาส่งออก JSON สำรองไว้ก่อนปิดหน้า");
+        throw err;
+      }
+    }
+
+    function loadRecords() {
+      try { records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+      catch { records = []; }
+      if (!Array.isArray(records)) records = [];
+      records = records.filter(Boolean).map(normalizeRecord);
+      if (!records.length) {
+        const seeded = normalizeRecord(readForm());
+        seeded.id = "REQ-" + Date.now();
+        records = [seeded];
+        saveRecords();
+      }
+    }
+
+    function saveCurrent() {
+      const record = readForm();
+      const validation = validateRecord(record);
+      if (!validation.ok) {
+        toast(validation.message);
+        $(validation.field)?.focus();
+        switchView("formView");
+        return;
+      }
+      const idx = records.findIndex((item) => item.id === record.id);
+      if (idx >= 0) records[idx] = record;
+      else records.unshift(record);
+      editingId = record.id;
+      $("editingBadge").textContent = "กำลังแก้ไข: " + (record.reqName || record.id);
+      saveRecords();
+      refreshAll();
+      toast("บันทึกข้อมูลแล้ว");
+    }
+
+    function deleteRecord(id) {
+      if (!confirm("ลบรายการนี้?")) return;
+      records = records.filter((item) => item.id !== id);
+      if (editingId === id) editingId = null;
+      saveRecords();
+      refreshAll();
+      toast("ลบรายการแล้ว");
+    }
+
+    function duplicateRecord(id) {
+      const src = records.find((item) => item.id === id);
+      if (!src) return;
+      const copy = { ...src, id: newId(), suffix: "", status: "draft", decision: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      records.unshift(copy);
+      saveRecords();
+      writeForm(copy);
+      switchView("formView");
+      toast("คัดลอกรายการแล้ว");
+    }
+
+    function editRecord(id) {
+      const record = records.find((item) => item.id === id);
+      if (!record) return;
+      writeForm(record);
+      switchView("formView");
+    }
+
+    function updateTotals() {
+      const daysEl = $("days");
+      if (daysEl) daysEl.value = calcDays($("dateFrom").value, $("dateTo").value) || "";
+      const t = totals();
+      const setTotalText = (id, value) => {
+        const el = $(id);
+        if (el) el.textContent = value;
+      };
+      setTotalText("hospTotal", baht(t.hosp));
+      setTotalText("fareTotal", baht(t.fare));
+      setTotalText("govTotal", baht(t.gov));
+      setTotalText("ownTotal", baht(t.own));
+      setTotalText("grandTotal", baht(t.all));
+    }
+
+    function renderRecords() {
+      const query = $("searchBox").value.trim().toLowerCase();
+      const filter = $("statusFilter").value;
+      const filtered = records.filter((record) => {
+        const status = finalStatus(record);
+        const haystack = [record.reqName, record.topic, record.venue, statusText(status), record.organizer].join(" ").toLowerCase();
+        return (!filter || status === filter) && (!query || haystack.includes(query));
+      });
+      $("recordCount").textContent = filtered.length + " รายการ";
+      $("recordsTbody").innerHTML = filtered.map((record) => {
+        const status = finalStatus(record);
+        const t = totals(record);
+        return `<tr><td>${escapeHtml(dateShort(record.docDate))}</td><td>${escapeHtml(record.reqName || "-")}<br><span style="color:var(--muted)">${escapeHtml(record.reqPos || "")}</span></td><td>${escapeHtml(record.topic || "-")}<br><span style="color:var(--muted)">${escapeHtml(record.venue || "")}</span></td><td><span class="status ${status}">${statusText(status)}</span></td><td>${baht(t.all)}</td><td><div class="row-actions"><button type="button" onclick="editRecord('${record.id}')">แก้ไข</button><button type="button" onclick="downloadRecordDocx('${record.id}')">DOCX</button><button type="button" onclick="duplicateRecord('${record.id}')">คัดลอก</button><button type="button" class="danger" onclick="deleteRecord('${record.id}')">ลบ</button></div></td></tr>`;
+      }).join("") || `<tr><td colspan="6">ไม่พบข้อมูล</td></tr>`;
+    }
+
+    function renderDashboard() {
+      const byStatus = { draft: 0, pending: 0, approved: 0, rejected: 0 };
+      const expenses = { hosp: 0, fare: 0, gov: 0, own: 0 };
+      let approvedTotal = 0;
+      let allTotal = 0;
+      for (const record of records) {
+        const status = finalStatus(record);
+        byStatus[status] = (byStatus[status] || 0) + 1;
+        const t = totals(record);
+        expenses.hosp += t.hosp;
+        expenses.fare += t.fare;
+        expenses.gov += t.gov;
+        expenses.own += t.own;
+        allTotal += t.all;
+        if (status === "approved") approvedTotal += t.all;
+      }
+      $("dashMetrics").innerHTML = [["คำขอทั้งหมด", records.length], ["รอพิจารณา", byStatus.pending], ["อนุมัติ", byStatus.approved], ["ยอดอนุมัติ", baht(approvedTotal)]].map(([label, value]) => `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
+      $("statusBars").innerHTML = barRows([["ร่าง", byStatus.draft], ["รอพิจารณา", byStatus.pending], ["อนุมัติ", byStatus.approved], ["ไม่อนุมัติ", byStatus.rejected]], Math.max(records.length, 1), false);
+      $("expenseBars").innerHTML = barRows([["เงินบำรุง รพ.", expenses.hosp], ["พาหนะโดยสาร", expenses.fare], ["รถราชการ", expenses.gov], ["รถส่วนตัว", expenses.own], ["รวมทั้งหมด", allTotal]], Math.max(allTotal, 1), true);
+    }
+
+    function barRows(rows, max, isMoney) {
+      return rows.map(([label, value]) => `<div class="bar-row"><strong>${label}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.round(((Number(value) || 0) / max) * 100)}%"></div></div><span>${isMoney ? baht(value) : value}</span></div>`).join("");
+    }
+
+    function blankLine(value, fallback = "................................................") {
+      const text = String(value ?? "").trim();
+      return text ? escapeHtml(text) : fallback;
+    }
+
+    function checkedBox(value) {
+      return `<span class="box">${value ? "✓" : ""}</span>`;
+    }
+
+    function renderPreview() {
+      const r = readForm();
+      const t = totals(r);
+      const companions = getCompanions(r);
+      $("previewDoc").innerHTML = `
+        <div class="official-form">
+          <div class="official-scale">
+          <div class="official-head">
+            <span class="official-garuda garuda-stamp" style="background-image:url('data:image/png;base64,${GARUDA_PNG_BASE64}')"><img class="garuda-img" src="data:image/png;base64,${GARUDA_PNG_BASE64}" alt="ตราครุฑ"></span>
+            <div class="official-title">บันทึกข้อความ</div>
+          </div>
+          <div class="form-grid-2">
+            <div>
+              <div class="official-row"><strong>ส่วนราชการ</strong><span>${blankLine(r.agency)}</span></div>
+              <div class="official-row"><strong>ที่</strong><span>${blankLine((r.docNo || "") + (r.suffix ? " / " + r.suffix : ""))}</span></div>
+              <div class="official-row"><strong>เรื่อง</strong><span>${blankLine(r.subject || "ขออนุญาตไปราชการ")}</span></div>
+            </div>
+            <div class="right-block">
+              <div class="official-row"><strong>กลุ่มงาน</strong><span>${blankLine(r.dept)}</span></div>
+              <div class="official-row"><strong>วันที่</strong><span>${dateThai(r.docDate)}</span></div>
+            </div>
+          </div>
+          <div class="dash-line"></div>
+          <div class="official-row"><strong>เรียน</strong><span>${blankLine(r.to || "ผู้อำนวยการโรงพยาบาลพรหมพิราม")}</span></div>
+          <div class="official-row official-indent">ข้าพเจ้า <span class="fill-text" style="width:58mm">${blankLine(r.reqName, "")}</span> ตำแหน่ง <span class="fill-text" style="width:70mm">${blankLine(r.reqPos, "")}</span></div>
+          <div class="official-row">มีความประสงค์ขออนุญาตไปราชการ เพื่อเข้ารับการ${blankLine(r.kind || "อบรม ประชุม / สัมมนา", "")} เรื่อง <span class="fill-text" style="flex:1">${blankLine(r.topic, "")}</span></div>
+          <div class="official-row"><span class="fill-text" style="flex:1">${blankLine("", "")}</span></div>
+          <div class="official-row">หน่วยงานผู้จัด <span class="fill-text" style="width:70mm">${blankLine(r.organizer, "")}</span> สถานที่ <span class="fill-text" style="flex:1">${blankLine(r.venue, "")}</span></div>
+          <div class="official-row">ระหว่างวันที่ <span class="fill-text" style="width:47mm">${dateThai(r.dateFrom)}</span> ถึงวันที่ <span class="fill-text" style="width:47mm">${dateThai(r.dateTo)}</span> วัตถุประสงค์ของการสมัครเข้ารับการอบรมเพื่อ</div>
+          <div class="official-row"><span class="fill-text" style="flex:1">${blankLine(r.purpose, "")}</span></div>
+          <div class="official-center">ทั้งนี้ มีผู้เข้าร่วมประชุมกับข้าพเจ้าด้วย ดังนี้</div>
+          ${companions.slice(0, 3).map((person, index) => `<div class="person-row"><span>${index + 1}.</span><span class="fill-text">${blankLine(person.name, "")}</span><span>ตำแหน่ง</span><span class="fill-text">${blankLine(person.pos, "")}</span></div>`).join("")}
+          <div>ในการไปราชการครั้งนี้ ขออนุญาต</div>
+          <div class="check-line">${checkedBox(r.useHosp)}<div>เบิกค่าใช้จ่ายต่างๆ จากเงินบำรุงโรงพยาบาล (ค่าลงทะเบียน <span class="fill-text" style="display:inline-block;width:28mm">${r.feeReg || ""}</span> บาท/ค่าที่พัก <span class="fill-text" style="display:inline-block;width:28mm">${r.feeStay || ""}</span> บาท/ค่าเบี้ยเลี้ยง <span class="fill-text" style="display:inline-block;width:28mm">${r.feeAllow || ""}</span> บาท) รวมเป็นเงิน <span class="fill-text" style="display:inline-block;width:36mm">${t.hosp ? baht(t.hosp) : ""}</span> บาท</div></div>
+          <div class="check-line">${checkedBox(r.useHost)}<div>เบิกค่าใช้จ่ายต่างๆ จากส่วนราชการผู้จัด</div></div>
+          <div class="check-line">${checkedBox(r.useFare)}<div>เบิกค่าพาหนะโดยสาร (รถประจำทาง <span class="fill-text" style="display:inline-block;width:25mm">${r.fareBus || ""}</span> บาท/รถไฟ <span class="fill-text" style="display:inline-block;width:25mm">${r.fareTrain || ""}</span> บาท/เครื่องบิน <span class="fill-text" style="display:inline-block;width:25mm">${r.fareAir || ""}</span> บาท/แท็กซี่ <span class="fill-text" style="display:inline-block;width:25mm">${r.fareTaxi || ""}</span> บาท) รวมเป็นเงิน <span class="fill-text" style="display:inline-block;width:34mm">${t.fare ? baht(t.fare) : ""}</span> บาท</div></div>
+          <div class="check-line">${checkedBox(r.useGovCar)}<div>ขอใช้รถยนต์ของทางราชการ หมายเลขทะเบียน <span class="fill-text" style="display:inline-block;width:52mm">${blankLine(r.govPlate, "")}</span> โดยมี <span class="fill-text" style="display:inline-block;width:60mm">${blankLine(r.govDriver, "")}</span> เป็นพนักงานขับรถ และเบิกค่าน้ำมันเชื้อเพลิง <span class="fill-text" style="display:inline-block;width:23mm">${r.govFuel || ""}</span> บาท/ค่าธรรมเนียมทางด่วน <span class="fill-text" style="display:inline-block;width:23mm">${r.govToll || ""}</span> บาท รวมเป็นเงิน <span class="fill-text" style="display:inline-block;width:26mm">${t.gov ? baht(t.gov) : ""}</span> บาท</div></div>
+          <div class="check-line">${checkedBox(r.useOwnCar)}<div>ขอใช้รถยนต์ส่วนบุคคล หมายเลขทะเบียน <span class="fill-text" style="display:inline-block;width:58mm">${blankLine(r.ownPlate, "")}</span> และเงินชดเชยค่าพาหนะส่วนตัวในอัตรากิโลเมตรละ <span class="fill-text" style="display:inline-block;width:22mm">${r.ownRate || ""}</span> บาท โดยเดินทางจาก <span class="fill-text" style="display:inline-block;width:64mm">${blankLine(r.ownFrom, "")}</span> ถึง <span class="fill-text" style="display:inline-block;width:64mm">${blankLine(r.ownTo, "")}</span> รวมระยะทางทั้งหมด (ไป-กลับ) <span class="fill-text" style="display:inline-block;width:28mm">${r.ownKm || ""}</span> กิโลเมตร คิดเป็นเงิน <span class="fill-text" style="display:inline-block;width:28mm">${t.own ? baht(t.own) : ""}</span> บาท โดยจะออกเดินทาง ในวันที่ <span class="fill-text" style="display:inline-block;width:42mm">${dateThai(r.depDate)}</span> เวลา <span class="fill-text" style="display:inline-block;width:22mm">${blankLine(r.depTime, "")}</span> และกลับมาถึงที่โรงพยาบาลพรหมพิราม/ที่พัก/บ้านพัก ในวันที่ <span class="fill-text" style="display:inline-block;width:42mm">${dateThai(r.retDate)}</span> เวลา <span class="fill-text" style="display:inline-block;width:22mm">${blankLine(r.retTime, "")}</span> น. และกลับมาปฏิบัติราชการในวันที่ <span class="fill-text" style="display:inline-block;width:42mm">${dateThai(r.workDate)}</span> ซึ่งมอบหมายงานในหน้าที่รับผิดชอบให้ <span class="fill-text" style="display:inline-block;width:55mm">${blankLine(r.delegate, "")}</span> ปฏิบัติงานแทน</div></div>
+          <div class="signature">ลงชื่อ <span class="fill-text" style="display:inline-block;width:62mm"></span> ผู้รับมอบหมายงาน</div>
+          <div>จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</div>
+          <div class="signature">( <span class="fill-text" style="display:inline-block;width:58mm">${blankLine(r.reqName, "")}</span> )<br>ตำแหน่ง <span class="fill-text" style="display:inline-block;width:52mm">${blankLine(r.reqPos, "")}</span></div>
+          <div class="comment-grid">
+            <div class="comment-box">
+              <div>ความเห็นของหัวหน้ากลุ่มงาน / ฝ่าย / งาน</div>
+              <div>ขอไปประชุมครั้งที่ <span class="fill-text" style="display:inline-block;width:35mm">${blankLine(r.meetingNo, "")}</span> เห็นควรอนุญาต</div>
+              <div>ลงชื่อ <span class="fill-text" style="display:inline-block;width:54mm"></span>(หน.กลุ่มงาน)</div>
+              <div>งบสนับสนุนบุคลากรคงเหลือทั้งสิ้น <span class="fill-text" style="display:inline-block;width:30mm">${r.budgetLeft || ""}</span> บาท</div>
+              <div>ตรวจสอบแล้ว การไปประชุมครั้งนี้ตรงกับงานที่รับผิดชอบ สามารถเบิกค่าใช้จ่ายต่างๆ ได้ตามระเบียบของทางราชการ</div>
+              <div style="margin-top:4mm">ลงชื่อ <span class="fill-text" style="display:inline-block;width:54mm">${blankLine(r.hrSign, "")}</span> งานพัฒนาบุคลากร</div>
+            </div>
+            <div class="comment-box">
+              <div class="comment-title">ความเห็นผู้อำนวยการโรงพยาบาลพรหมพิราม</div>
+              <div class="director-choice"><span>${checkedBox(r.decision === "approved")} อนุมัติ</span><span>${checkedBox(r.decision === "rejected")} ไม่อนุมัติ</span></div>
+              <div class="fill-text" style="height:7mm">${blankLine(r.directorNote, "")}</div>
+              <div class="fill-text" style="height:7mm"></div>
+              <div class="signature">ลงชื่อ<br>( <span class="fill-text" style="display:inline-block;width:65mm">${blankLine(r.directorSign, "")}</span> )<br><span class="fill-text" style="display:inline-block;width:70mm"></span><br><span class="fill-text" style="display:inline-block;width:70mm">${dateThai(r.directorDate)}</span></div>
+            </div>
+          </div>
+          </div>
+        </div>`;
+      markBlankFields();
+      applyGarudaImages();
+      requestAnimationFrame(fitOfficialPage);
+    }
+
+    function markBlankFields() {
+      document.querySelectorAll("#previewDoc .fill-text").forEach((el) => {
+        const text = String(el.textContent || "").trim();
+        const blank = !text || /^[.\s]+$/.test(text);
+        el.classList.toggle("blank", blank);
+      });
+    }
+
+    function fitOfficialPage() {
+      const page = $("previewDoc")?.querySelector(".official-form");
+      const content = page?.querySelector(".official-scale");
+      if (!page || !content) return;
+      page.style.setProperty("--page-scale", "1");
+      const availableHeight = page.clientHeight;
+      const availableWidth = page.clientWidth;
+      const scale = Math.min(1, availableHeight / Math.max(content.scrollHeight, 1), availableWidth / Math.max(content.scrollWidth, 1));
+      page.style.setProperty("--page-scale", String(Math.max(0.45, scale - 0.005)));
+    }
+
+    function preparePrint() {
+      switchView("previewView");
+      renderPreview();
+      fitOfficialPage();
+    }
+
+    function printOnePage() {
+      preparePrint();
+      requestAnimationFrame(() => {
+        fitOfficialPage();
+        window.print();
+      });
+    }
+
+    function applyGarudaImages() {
+      const uri = "data:image/png;base64," + GARUDA_PNG_BASE64;
+      document.documentElement.style.setProperty("--garuda-url", `url("${uri}")`);
+      document.querySelectorAll(".garuda-stamp").forEach((stamp) => {
+        stamp.style.backgroundImage = `url("garuda.png"), url("${uri}")`;
+      });
+      document.querySelectorAll(".garuda-img").forEach((img) => {
+        img.decoding = "sync";
+        img.loading = "eager";
+        img.src = uri;
+      });
+    }
+
+    function refreshAll() {
+      updateTotals();
+      renderRecords();
+      renderDashboard();
+      renderPreview();
+    }
+
+    function switchView(id) {
+      document.querySelectorAll(".view").forEach((el) => el.classList.toggle("active", el.id === id));
+      document.querySelectorAll(".nav button").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === id));
+      $("pageTitle").textContent = ({ formView: "แบบฟอร์มขออนุญาตไปราชการ", recordsView: "รายการคำขอ", dashboardView: "Dashboard", previewView: "พิมพ์/ตัวอย่าง" }[id]) || "แบบฟอร์มขออนุญาตไปราชการ";
+      refreshAll();
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m]));
+    }
+
+    function toast(message) {
+      $("toast").textContent = message;
+      $("toast").classList.add("show");
+      setTimeout(() => $("toast").classList.remove("show"), 2200);
+    }
+
+    function exportJson() {
+      downloadBlob(new Blob([JSON.stringify(records, null, 2)], { type: "application/json;charset=utf-8" }), "travel-permission-records.json");
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    }
+
+    function exportCsv() {
+      const headers = ["ID","วันที่หนังสือ","ผู้ขอ","ตำแหน่ง","ประเภท","หัวข้อ","ผู้จัด","สถานที่","วันที่เริ่ม","วันที่สิ้นสุด","จำนวนวัน","สถานะ","ยอดเงินบำรุง","ยอดพาหนะ","ยอดรถราชการ","ยอดรถส่วนตัว","ยอดรวม"];
+      const rows = records.map((record) => {
+        const t = totals(record);
+        return [record.id, record.docDate, record.reqName, record.reqPos, record.kind, record.topic, record.organizer, record.venue, record.dateFrom, record.dateTo, record.days || calcDays(record.dateFrom, record.dateTo), statusText(finalStatus(record)), t.hosp, t.fare, t.gov, t.own, t.all];
+      });
+      const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+      downloadBlob(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }), "travel-permission-records.csv");
+    }
+
+    function importJson() {
+      $("importJsonFile").click();
+    }
+
+    function handleImportJson(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(String(reader.result || "[]"));
+          if (!Array.isArray(imported)) throw new Error("JSON ต้องเป็นรายการข้อมูล");
+          records = imported.filter(Boolean).map(normalizeRecord);
+          saveRecords();
+          if (records[0]) writeForm(records[0]);
+          renderRecords();
+          renderDashboard();
+          switchView("recordsView");
+          toast("นำเข้าข้อมูลแล้ว " + records.length + " รายการ");
+        } catch (err) {
+          alert("นำเข้า JSON ไม่สำเร็จ: " + err.message);
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    function downloadCurrentDocx() {
+      const record = readForm();
+      const validation = validateRecord(record);
+      if (!validation.ok) {
+        toast(validation.message);
+        $(validation.field)?.focus();
+        switchView("formView");
+        return;
+      }
+      downloadDocx(record, "แบบฟอร์มขออนุญาตไปราชการ-" + (record.reqName || "รายการ") + ".docx");
+    }
+
+    function downloadBlankDocx() {
+      downloadDocx(blankRecord(), "แบบฟอร์มขออนุญาตไปราชการ-เปล่า.docx");
+    }
+
+    function downloadRecordDocx(id) {
+      const record = records.find((item) => item.id === id);
+      if (record) downloadDocx(record, "แบบฟอร์มขออนุญาตไปราชการ-" + (record.reqName || record.id) + ".docx");
+    }
+
+    function blankRecord() {
+      return { agency: "โรงพยาบาลพรหมพิราม", dept: "", docNo: "", suffix: "", docDate: "", subject: "ขออนุญาตไปราชการ", to: "ผู้อำนวยการโรงพยาบาลพรหมพิราม", reqName: "", reqPos: "", kind: "", topic: "", organizer: "", venue: "", dateFrom: "", dateTo: "", days: "", purpose: "", personsCount: "", persons: "", person1Name: "", person1Pos: "", person2Name: "", person2Pos: "", person3Name: "", person3Pos: "", useHosp: false, useHost: false, useFare: false, useGovCar: false, useOwnCar: false, feeReg: 0, feeStay: 0, feeAllow: 0, fareBus: 0, fareTrain: 0, fareAir: 0, fareTaxi: 0, govFuel: 0, govToll: 0, govPlate: "", govDriver: "", ownPlate: "", ownFrom: "", ownTo: "", ownKm: 0, ownRate: 4, depDate: "", depTime: "", retDate: "", retTime: "", workDate: "", delegate: "", meetingNo: "", budgetLeft: 0, hrSign: "", status: "draft", decision: "", directorNote: "", directorSign: "", directorDate: "" };
+    }
+
+    function downloadDocx(record, filename) {
+      const files = createDocxFiles(record);
+      const zip = buildZip(files);
+      downloadBlob(new Blob([zip], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }), sanitizeFileName(filename));
+      toast("สร้างไฟล์ DOCX แล้ว");
+    }
+
+    function sanitizeFileName(name) {
+      return name.replace(/[\\/:*?"<>|]+/g, "-");
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function xml(text) {
+      return String(text ?? "").replace(/[<>&'"]/g, (m) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[m]));
+    }
+
+    function lines(text) {
+      return String(text || "").split(/\r?\n/).map((part, index) => `${index ? "<w:br/>" : ""}<w:t xml:space="preserve">${xml(part)}</w:t>`).join("");
+    }
+
+    function p(text, opts = {}) {
+      const jc = opts.center ? '<w:jc w:val="center"/>' : opts.right ? '<w:jc w:val="right"/>' : "";
+      const size = opts.size || 32;
+      const bold = opts.bold ? "<w:b/>" : "";
+      return `<w:p><w:pPr>${jc}<w:spacing w:before="${opts.before ?? 0}" w:after="${opts.after ?? 120}" w:line="${opts.line ?? 300}" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="${size}"/><w:szCs w:val="${size}"/>${bold}</w:rPr>${lines(text)}</w:r></w:p>`;
+    }
+
+    function field(value, width = 28) {
+      const v = String(value || "").trim();
+      return v || ".".repeat(width);
+    }
+
+    function check(value) {
+      return value ? "☑" : "☐";
+    }
+
+    function table(rows, widths) {
+      const grid = widths.map((w) => `<w:gridCol w:w="${w}"/>`).join("");
+      return `<w:tbl><w:tblPr><w:tblW w:w="9360" w:type="dxa"/><w:tblBorders><w:top w:val="single" w:sz="4" w:color="B8C4CC"/><w:left w:val="single" w:sz="4" w:color="B8C4CC"/><w:bottom w:val="single" w:sz="4" w:color="B8C4CC"/><w:right w:val="single" w:sz="4" w:color="B8C4CC"/><w:insideH w:val="single" w:sz="4" w:color="B8C4CC"/><w:insideV w:val="single" w:sz="4" w:color="B8C4CC"/></w:tblBorders><w:tblCellMar><w:top w:w="90" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:bottom w:w="90" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${grid}</w:tblGrid>${rows.map((row) => `<w:tr>${row.map((cell, i) => tc(cell, widths[i], row.header)).join("")}</w:tr>`).join("")}</w:tbl>`;
+    }
+
+    function tc(text, width, header = false) {
+      const fill = header ? '<w:shd w:fill="EEF5F4"/>' : "";
+      const bold = header ? "<w:b/>" : "";
+      return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/>${fill}<w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:after="60" w:line="300" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="30"/><w:szCs w:val="30"/>${bold}</w:rPr>${lines(text)}</w:r></w:p></w:tc>`;
+    }
+
+    function createLegacyDocxFiles(record) {
+      const t = totals(record);
+      const expenseRows = [["หมวดค่าใช้จ่าย", "รายละเอียด", "จำนวนเงิน"], ["เงินบำรุงโรงพยาบาล", `${check(record.useHosp)} ค่าลงทะเบียน ${baht(record.feeReg)} / ค่าที่พัก ${baht(record.feeStay)} / ค่าเบี้ยเลี้ยง ${baht(record.feeAllow)}`, baht(t.hosp)], ["ผู้จัดรับผิดชอบ", `${check(record.useHost)} ผู้จัดรับผิดชอบค่าใช้จ่าย`, "-"], ["ค่าพาหนะโดยสาร", `${check(record.useFare)} รถโดยสาร ${baht(record.fareBus)} / รถไฟ ${baht(record.fareTrain)} / เครื่องบิน ${baht(record.fareAir)} / รับจ้าง ${baht(record.fareTaxi)}`, baht(t.fare)], ["รถราชการ", `${check(record.useGovCar)} ทะเบียน ${field(record.govPlate, 18)} พนักงานขับรถ ${field(record.govDriver, 18)}`, baht(t.gov)], ["รถส่วนตัว", `${check(record.useOwnCar)} ทะเบียน ${field(record.ownPlate, 18)} จาก ${field(record.ownFrom, 18)} ถึง ${field(record.ownTo, 18)} ${record.ownKm || 0} กม. x ${record.ownRate || 0} บาท`, baht(t.own)], ["รวมทั้งสิ้น", "", baht(t.all)]].map((row, index) => Object.assign(row, { header: index === 0 || index === 6 }));
+      const body = [p("แบบฟอร์มการขออนุญาตไปราชการ", { center: true, bold: true, size: 40, after: 40 }), p(record.agency || "โรงพยาบาลพรหมพิราม", { center: true, bold: true, size: 32, after: 180 }), p(`ที่ ${field(record.docNo, 22)} ${field(record.suffix, 10)}                                                        วันที่ ${dateThai(record.docDate)}`), p(`เรื่อง ${record.subject || "ขออนุญาตไปราชการ"}`), p(`เรียน ${record.to || "ผู้อำนวยการโรงพยาบาลพรหมพิราม"}`), p(`ข้าพเจ้า ${field(record.reqName, 32)} ตำแหน่ง ${field(record.reqPos, 32)} สังกัด ${field(record.dept, 24)} ขออนุญาตไปราชการเพื่อเข้าร่วม${field(record.kind, 12)}`), p(`หัวข้อ/เรื่อง ${field(record.topic, 70)}`), p(`จัดโดย ${field(record.organizer, 34)} ณ ${field(record.venue, 54)}`), p(`ระหว่างวันที่ ${dateThai(record.dateFrom)} ถึงวันที่ ${dateThai(record.dateTo)} รวม ${record.days || calcDays(record.dateFrom, record.dateTo) || "....."} วัน`), p(`วัตถุประสงค์ ${field(record.purpose, 76)}`), p(`ผู้ร่วมเดินทาง ${field(record.persons, 70)} จำนวน ${field(record.personsCount, 6)} คน`), p("รายละเอียดค่าใช้จ่าย", { bold: true, before: 80 }), table(expenseRows, [2100, 5460, 1800]), p(`การเดินทาง: ไปวันที่ ${dateThai(record.depDate)} เวลา ${field(record.depTime, 8)} กลับวันที่ ${dateThai(record.retDate)} เวลา ${field(record.retTime, 8)} กลับเข้าปฏิบัติงานวันที่ ${dateThai(record.workDate)}`, { before: 120 }), p(`มอบหมายให้ ${field(record.delegate, 32)} ปฏิบัติงานแทนระหว่างไปราชการ`), p(`ความเห็น/หมายเหตุผู้อนุมัติ ${field(record.directorNote, 70)}`), p("จึงเรียนมาเพื่อโปรดพิจารณาอนุญาต", { before: 120 }), p(`ลงชื่อ ................................................ ผู้ขออนุญาต\n(${field(record.reqName, 32)})`, { right: true, before: 260 }), p(`ลงชื่อ ................................................ ผู้บังคับบัญชา/ผู้อนุมัติ\n(${field(record.directorSign || "ผู้อำนวยการโรงพยาบาล", 32)})\nวันที่ ${dateThai(record.directorDate)}`, { right: true, before: 200 })].join("");
+      const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+      return { "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`, "_rels/.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`, "word/_rels/document.xml.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/></Relationships>`, "word/document.xml": documentXml, "word/styles.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="120" w:line="300" w:lineRule="auto"/></w:pPr><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="32"/><w:szCs w:val="32"/></w:rPr></w:style></w:styles>`, "word/settings.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:displayBackgroundShape/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat></w:settings>`, "docProps/core.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>แบบฟอร์มการขออนุญาตไปราชการ</dc:title><dc:creator>Codex</dc:creator><cp:lastModifiedBy>Codex</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:modified></cp:coreProperties>`, "docProps/app.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Word</Application></Properties>` };
+    }
+
+    function base64ToBytes(base64) {
+      const clean = String(base64 || "").replace(/^data:image\/png;base64,/, "").replace(/\s/g, "");
+      if (typeof atob === "function") {
+        const binary = atob(clean);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return bytes;
+      }
+      const buffer = Buffer.from(clean, "base64");
+      return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+    }
+
+    function docxFit(value, max = 80) {
+      return String(value ?? "").replace(/\s+/g, " ").trim();
+    }
+
+    function docxField(value, width = 24, max = 80) {
+      const text = docxFit(value, max);
+      return text || ".".repeat(width);
+    }
+
+    function docxDateField(value) {
+      return docxField(dateThai(value), 20, 26);
+    }
+
+    function docxRun(text, opts = {}) {
+      const size = opts.size ?? 29;
+      const bold = opts.bold ? "<w:b/>" : "";
+      const underline = opts.underline ? '<w:u w:val="single"/>' : "";
+      return `<w:r><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="${size}"/><w:szCs w:val="${size}"/>${bold}${underline}</w:rPr>${lines(text)}</w:r>`;
+    }
+
+    function docxP(content = "", opts = {}) {
+      const jc = opts.center ? '<w:jc w:val="center"/>' : opts.right ? '<w:jc w:val="right"/>' : "";
+      const indent = opts.indent ? `<w:ind w:left="${opts.indent}"/>` : "";
+      const keep = opts.keep ? "<w:keepLines/>" : "";
+      const spacing = `<w:spacing w:before="${opts.before ?? 0}" w:after="${opts.after ?? 0}" w:line="${opts.line ?? 230}" w:lineRule="auto"/>`;
+      const body = opts.raw ? content : Array.isArray(content) ? content.join("") : docxRun(content, opts);
+      return `<w:p><w:pPr>${jc}${spacing}${indent}${keep}</w:pPr>${body}</w:p>`;
+    }
+
+    function docxImageRun(relId, name, cx, cy) {
+      return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="1" name="${xml(name)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="${xml(name)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
+    }
+
+    function docxCell(content, width, opts = {}) {
+      const borders = opts.noBorder ? '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>' : "";
+      const valign = opts.valign ? `<w:vAlign w:val="${opts.valign}"/>` : '<w:vAlign w:val="top"/>';
+      const margin = `<w:tcMar><w:top w:w="${opts.marginY ?? 40}" w:type="dxa"/><w:left w:w="${opts.marginX ?? 70}" w:type="dxa"/><w:bottom w:w="${opts.marginY ?? 40}" w:type="dxa"/><w:right w:w="${opts.marginX ?? 70}" w:type="dxa"/></w:tcMar>`;
+      const inner = Array.isArray(content) ? content.join("") : String(content || "");
+      return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/>${borders}${valign}${margin}</w:tcPr>${inner || docxP("")}</w:tc>`;
+    }
+
+    function docxTable(rows, widths, opts = {}) {
+      const tableWidth = widths.reduce((sum, value) => sum + value, 0);
+      const border = opts.noBorder
+        ? '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>'
+        : `<w:tblBorders><w:top w:val="single" w:sz="${opts.borderSize ?? 6}" w:color="${opts.borderColor ?? "111111"}"/><w:left w:val="single" w:sz="${opts.borderSize ?? 6}" w:color="${opts.borderColor ?? "111111"}"/><w:bottom w:val="single" w:sz="${opts.borderSize ?? 6}" w:color="${opts.borderColor ?? "111111"}"/><w:right w:val="single" w:sz="${opts.borderSize ?? 6}" w:color="${opts.borderColor ?? "111111"}"/><w:insideH w:val="single" w:sz="${opts.borderSize ?? 6}" w:color="${opts.borderColor ?? "111111"}"/><w:insideV w:val="single" w:sz="${opts.borderSize ?? 6}" w:color="${opts.borderColor ?? "111111"}"/></w:tblBorders>`;
+      const grid = widths.map((width) => `<w:gridCol w:w="${width}"/>`).join("");
+      const rowsXml = rows.map((row) => `<w:tr>${row.map((cell, index) => docxCell(cell, widths[index], { noBorder: opts.noBorder, marginX: opts.marginX, marginY: opts.marginY, valign: opts.valign })).join("")}</w:tr>`).join("");
+      return `<w:tbl><w:tblPr><w:tblW w:w="${tableWidth}" w:type="dxa"/><w:tblLayout w:type="fixed"/>${border}</w:tblPr><w:tblGrid>${grid}</w:tblGrid>${rowsXml}</w:tbl>`;
+    }
+
+    function createDocxFiles(record) {
+      const t = totals(record);
+      const contentWidth = 10546;
+      const docNo = docxFit([record.docNo, record.suffix ? "/ " + record.suffix : ""].filter(Boolean).join(" "), 38);
+      const companions = getCompanions(record);
+      const header = docxTable([[
+        docxP(docxImageRun("rId3", "ตราครุฑ", 378000, 331000), { raw: true }),
+        docxP("บันทึกข้อความ", { center: true, bold: true, size: 46, line: 360, after: 0 }),
+        docxP("")
+      ]], [1500, contentWidth - 3000, 1500], { noBorder: true, marginX: 0, marginY: 0, valign: "center" });
+      const meta = docxTable([
+        [docxP("ส่วนราชการ " + docxField(record.agency || "โรงพยาบาลพรหมพิราม", 48, 70), { bold: true }), docxP("กลุ่มงาน " + docxField(record.dept, 24, 34), { right: true })],
+        [docxP("ที่ " + docxField(docNo, 30, 38)), docxP("วันที่ " + docxDateField(record.docDate), { right: true })],
+        [docxP("เรื่อง " + docxField(record.subject || "ขออนุญาตไปราชการ", 58, 78)), docxP("")]
+      ], [6650, contentWidth - 6650], { noBorder: true, marginX: 0, marginY: 0 });
+      const signature = docxTable([[
+        docxP(""),
+        [
+          docxP("( " + docxField(record.reqName, 28, 42) + " )", { center: true, before: 80 }),
+          docxP("ตำแหน่ง " + docxField(record.reqPos, 30, 44), { center: true })
+        ].join("")
+      ]], [5200, contentWidth - 5200], { noBorder: true, marginX: 0, marginY: 0 });
+      const commentLeft = [
+        docxP("ความเห็นของหัวหน้ากลุ่มงาน / ฝ่าย / งาน", { bold: true, size: 27 }),
+        docxP("ขอไปประชุมครั้งที่ " + docxField(record.meetingNo, 8, 10) + " เห็นควรอนุญาต", { size: 27 }),
+        docxP("ลงชื่อ ........................................ (หน.กลุ่มงาน)", { size: 27 }),
+        docxP("งบสนับสนุนบุคลากรคงเหลือทั้งสิ้น " + docxField(record.budgetLeft, 10, 14) + " บาท", { size: 27 }),
+        docxP("ตรวจสอบแล้ว การไปประชุมครั้งนี้ตรงกับงานที่รับผิดชอบ สามารถเบิกค่าใช้จ่ายต่างๆ ได้ตามระเบียบของทางราชการ", { size: 26, line: 215 }),
+        docxP("ลงชื่อ " + docxField(record.hrSign, 24, 34) + " งานพัฒนาบุคลากร", { size: 27, before: 60 })
+      ].join("");
+      const commentRight = [
+        docxP("ความเห็นผู้อำนวยการโรงพยาบาลพรหมพิราม", { center: true, underline: true, size: 27 }),
+        docxP(check(record.decision === "approved") + " อนุมัติ        " + check(record.decision === "rejected") + " ไม่อนุมัติ", { center: true, size: 28, before: 60 }),
+        docxP(docxField(record.directorNote, 46, 60), { size: 27, before: 40 }),
+        docxP("........................................................", { size: 27 }),
+        docxP("ลงชื่อ", { center: true, size: 27, before: 80 }),
+        docxP("( " + docxField(record.directorSign, 28, 40) + " )", { center: true, size: 27 }),
+        docxP("........................................................", { center: true, size: 27 }),
+        docxP(docxDateField(record.directorDate), { center: true, size: 27 })
+      ].join("");
+      const body = [
+        header,
+        meta,
+        docxP("--------------------------------------------------------------------------------------------------------------------------------", { size: 22, line: 180, after: 20 }),
+        docxP("เรียน " + docxField(record.to || "ผู้อำนวยการโรงพยาบาลพรหมพิราม", 55, 70)),
+        docxP("ข้าพเจ้า " + docxField(record.reqName, 32, 45) + " ตำแหน่ง " + docxField(record.reqPos, 38, 55), { indent: 900 }),
+        docxP("มีความประสงค์ขออนุญาตไปราชการ เพื่อเข้ารับการอบรม ประชุม / สัมมนา เรื่อง " + docxField(record.topic, 60, 86)),
+        docxP("หน่วยงานผู้จัด " + docxField(record.organizer, 36, 50) + " สถานที่ " + docxField(record.venue, 50, 70)),
+        docxP("ระหว่างวันที่ " + docxDateField(record.dateFrom) + " ถึงวันที่ " + docxDateField(record.dateTo) + " รวม " + docxField(record.days || calcDays(record.dateFrom, record.dateTo), 6, 8) + " วัน"),
+        docxP("วัตถุประสงค์ของการสมัครเข้ารับการอบรมเพื่อ " + docxField(record.purpose, 70, 96)),
+        docxP("ทั้งนี้ มีผู้เข้าร่วมประชุมกับข้าพเจ้าด้วย ดังนี้", { center: true }),
+        docxP("1. " + docxField(companions[0].name, 34, 46) + " ตำแหน่ง " + docxField(companions[0].pos, 26), { indent: 520 }),
+        docxP("2. " + docxField(companions[1].name, 34, 46) + " ตำแหน่ง " + docxField(companions[1].pos, 26), { indent: 520 }),
+        docxP("3. " + docxField(companions[2].name, 34, 46) + " ตำแหน่ง " + docxField(companions[2].pos, 26), { indent: 520 }),
+        docxP("ในการไปราชการครั้งนี้ ขออนุญาต", { before: 20 }),
+        docxP(check(record.useHosp) + " เบิกค่าใช้จ่ายต่างๆ จากเงินบำรุงโรงพยาบาล (ค่าลงทะเบียน " + docxField(record.feeReg, 10, 12) + " บาท/ค่าที่พัก " + docxField(record.feeStay, 10, 12) + " บาท/ค่าเบี้ยเลี้ยง " + docxField(record.feeAllow, 10, 12) + " บาท) รวมเป็นเงิน " + docxField(t.hosp ? baht(t.hosp) : "", 12, 16) + " บาท", { indent: 420, size: 28 }),
+        docxP(check(record.useHost) + " เบิกค่าใช้จ่ายต่างๆ จากส่วนราชการผู้จัด", { indent: 420, size: 28 }),
+        docxP(check(record.useFare) + " เบิกค่าพาหนะโดยสาร (รถประจำทาง " + docxField(record.fareBus, 8, 10) + " บาท/รถไฟ " + docxField(record.fareTrain, 8, 10) + " บาท/เครื่องบิน " + docxField(record.fareAir, 8, 10) + " บาท/แท็กซี่ " + docxField(record.fareTaxi, 8, 10) + " บาท) รวมเป็นเงิน " + docxField(t.fare ? baht(t.fare) : "", 12, 16) + " บาท", { indent: 420, size: 28 }),
+        docxP(check(record.useGovCar) + " ขอใช้รถยนต์ของทางราชการ หมายเลขทะเบียน " + docxField(record.govPlate, 18, 24) + " โดยมี " + docxField(record.govDriver, 22, 32) + " เป็นพนักงานขับรถ เบิกค่าน้ำมัน " + docxField(record.govFuel, 8, 10) + " บาท/ค่าทางด่วน " + docxField(record.govToll, 8, 10) + " บาท", { indent: 420, size: 28 }),
+        docxP(check(record.useOwnCar) + " ขอใช้รถยนต์ส่วนบุคคล หมายเลขทะเบียน " + docxField(record.ownPlate, 20, 28) + " อัตรากิโลเมตรละ " + docxField(record.ownRate, 6, 8) + " บาท เดินทางจาก " + docxField(record.ownFrom, 20, 30) + " ถึง " + docxField(record.ownTo, 20, 30), { indent: 420, size: 28 }),
+        docxP("รวมระยะทางทั้งหมด (ไป-กลับ) " + docxField(record.ownKm, 8, 10) + " กิโลเมตร คิดเป็นเงิน " + docxField(t.own ? baht(t.own) : "", 12, 16) + " บาท ออกเดินทางวันที่ " + docxDateField(record.depDate) + " เวลา " + docxField(record.depTime, 8, 8) + " น.", { indent: 420, size: 28 }),
+        docxP("กลับถึงโรงพยาบาลพรหมพิราม/ที่พัก/บ้านพัก วันที่ " + docxDateField(record.retDate) + " เวลา " + docxField(record.retTime, 8, 8) + " น. และกลับมาปฏิบัติราชการวันที่ " + docxDateField(record.workDate), { indent: 420, size: 28 }),
+        docxP("มอบหมายงานในหน้าที่รับผิดชอบให้ " + docxField(record.delegate, 34, 48) + " ปฏิบัติงานแทนระหว่างไปราชการ", { indent: 420 }),
+        docxP("ลงชื่อ ................................................ ผู้รับมอบหมายงาน", { right: true, before: 30 }),
+        docxP("จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ", { before: 20 }),
+        signature,
+        docxTable([[commentLeft, commentRight]], [4900, contentWidth - 4900], { borderColor: "111111", borderSize: 8, marginX: 110, marginY: 70 })
+      ].join("");
+      const createdAt = new Date().toISOString();
+      const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="624" w:right="680" w:bottom="567" w:left="680" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+      return {
+        "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`,
+        "_rels/.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`,
+        "word/_rels/document.xml.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/garuda.png"/></Relationships>`,
+        "word/document.xml": documentXml,
+        "word/styles.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="29"/><w:szCs w:val="29"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="230" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="0" w:line="230" w:lineRule="auto"/></w:pPr><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="29"/><w:szCs w:val="29"/></w:rPr></w:style></w:styles>`,
+        "word/settings.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:displayBackgroundShape/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat></w:settings>`,
+        "word/media/garuda.png": base64ToBytes(GARUDA_PNG_BASE64),
+        "docProps/core.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>แบบฟอร์มการขออนุญาตไปราชการ</dc:title><dc:creator>Codex</dc:creator><cp:lastModifiedBy>Codex</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">${createdAt}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${createdAt}</dcterms:modified></cp:coreProperties>`,
+        "docProps/app.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Word</Application></Properties>`
+      };
+    }
+
+    const utf8 = (str) => new TextEncoder().encode(str);
+    const crcTable = (() => { const table = new Uint32Array(256); for (let i = 0; i < 256; i++) { let c = i; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; table[i] = c >>> 0; } return table; })();
+    function crc32(bytes) { let c = 0xffffffff; for (const b of bytes) c = crcTable[(c ^ b) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+    function writeU16(arr, value) { arr.push(value & 255, (value >>> 8) & 255); }
+    function writeU32(arr, value) { arr.push(value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255); }
+    function dosTimeDate() { const d = new Date(); return { time: (d.getHours() << 11) | (d.getMinutes() << 5) | Math.floor(d.getSeconds() / 2), date: ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate() }; }
+    function buildZip(files) {
+      const out = [];
+      const central = [];
+      let offset = 0;
+      const stamp = dosTimeDate();
+      for (const [name, content] of Object.entries(files)) {
+        const nameBytes = utf8(name);
+        const data = content instanceof Uint8Array ? content : utf8(content);
+        const crc = crc32(data);
+        const local = [];
+        writeU32(local, 0x04034b50); writeU16(local, 20); writeU16(local, 0x0800); writeU16(local, 0); writeU16(local, stamp.time); writeU16(local, stamp.date); writeU32(local, crc); writeU32(local, data.length); writeU32(local, data.length); writeU16(local, nameBytes.length); writeU16(local, 0); local.push(...nameBytes, ...data);
+        out.push(...local);
+        const dir = [];
+        writeU32(dir, 0x02014b50); writeU16(dir, 20); writeU16(dir, 20); writeU16(dir, 0x0800); writeU16(dir, 0); writeU16(dir, stamp.time); writeU16(dir, stamp.date); writeU32(dir, crc); writeU32(dir, data.length); writeU32(dir, data.length); writeU16(dir, nameBytes.length); writeU16(dir, 0); writeU16(dir, 0); writeU16(dir, 0); writeU16(dir, 0); writeU32(dir, 0); writeU32(dir, offset); dir.push(...nameBytes);
+        central.push(...dir);
+        offset += local.length;
+      }
+      const centralOffset = out.length;
+      out.push(...central);
+      writeU32(out, 0x06054b50); writeU16(out, 0); writeU16(out, 0); writeU16(out, Object.keys(files).length); writeU16(out, Object.keys(files).length); writeU32(out, central.length); writeU32(out, centralOffset); writeU16(out, 0);
+      return new Uint8Array(out);
+    }
+
+    document.querySelectorAll(".nav button").forEach((btn) => btn.addEventListener("click", () => switchView(btn.dataset.view)));
+    $("saveBtn").addEventListener("click", saveCurrent);
+    $("newBtn").addEventListener("click", () => { resetForm(); switchView("formView"); toast("เริ่มรายการใหม่"); });
+    $("docxBtn").addEventListener("click", downloadCurrentDocx);
+    $("blankDocxBtn").addEventListener("click", downloadBlankDocx);
+    $("printBtn").addEventListener("click", printOnePage);
+    $("exportJsonBtn").addEventListener("click", exportJson);
+    $("exportCsvBtn").addEventListener("click", exportCsv);
+    $("importJsonBtn").addEventListener("click", importJson);
+    $("importJsonFile").addEventListener("change", handleImportJson);
+    $("searchBox").addEventListener("input", renderRecords);
+    $("statusFilter").addEventListener("change", renderRecords);
+    formIds.forEach((id) => { const el = $(id); if (el) { el.addEventListener("input", refreshAll); el.addEventListener("change", refreshAll); } });
+    [["decisionApproved", "approved"], ["decisionRejected", "rejected"]].forEach(([id, value]) => {
+      const el = $(id);
+      if (el) el.addEventListener("change", () => { syncDecisionFromBoxes(value); refreshAll(); });
+    });
+    window.addEventListener("resize", fitOfficialPage);
+    window.addEventListener("beforeprint", preparePrint);
+    if (document.fonts?.ready) document.fonts.ready.then(fitOfficialPage);
+    applyGarudaImages();
+    seedDates();
+    loadRecords();
+    if (records[0]) writeForm(records[0]);
+    else refreshAll();
+  </script>
+</body>
+</html>
+

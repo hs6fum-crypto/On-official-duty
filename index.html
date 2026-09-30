@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>แบบฟอร์มขออนุญาตไปราชการ</title>
+  <style>
+    :root {
+      --bg: #f6f7f8;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #697586;
+      --line: #d9e1e7;
+      --soft: #eef5f4;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --gold: #b7791f;
+      --red: #b42318;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+      font-family: "TH Sarabun New", Tahoma, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-size: 16px; }
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; border-radius: 7px; min-height: 38px; padding: 8px 12px; background: #e7ecef; color: var(--ink); transition: transform .12s ease, background .12s ease, box-shadow .12s ease; }
+    button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15, 23, 42, .08); }
+    button.primary { background: var(--brand); color: #fff; }
+    button.primary:hover { background: var(--brand-dark); }
+    button.warning { background: #fff4df; color: #7c4a03; }
+    button.danger { background: #fee4e2; color: var(--red); }
+    button.ghost { background: transparent; border: 1px solid var(--line); }
+    input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 7px; padding: 8px 10px; min-height: 38px; outline: none; }
+    textarea { resize: vertical; min-height: 76px; line-height: 1.45; }
+    input:focus, select:focus, textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15, 118, 110, .12); }
+    label { display: grid; gap: 6px; color: #334155; font-weight: 600; }
+    .app { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 100vh; }
+    .sidebar { background: #fff; border-right: 1px solid var(--line); padding: 22px 16px; position: sticky; top: 0; height: 100vh; }
+    .brand { display: grid; gap: 4px; margin-bottom: 22px; }
+    .brand strong { font-size: 22px; line-height: 1.15; }
+    .brand span { color: var(--muted); font-size: 14px; }
+    .nav { display: grid; gap: 8px; }
+    .nav button { width: 100%; justify-content: flex-start; text-align: left; background: transparent; border: 1px solid transparent; display: flex; gap: 10px; align-items: center; }
+    .nav button.active { background: var(--soft); border-color: #cfe2df; color: var(--brand-dark); font-weight: 700; }
+    .main { min-width: 0; padding: 22px 28px 42px; }
+    .topbar { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .topbar h1 { margin: 0; font-size: 26px; line-height: 1.2; }
+    .topbar .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+    .panel-head { padding: 14px 16px; border-bottom: 1px solid var(--line); background: #fbfcfc; display: flex; gap: 12px; justify-content: space-between; align-items: center; }
+    .panel-head h2 { margin: 0; font-size: 19px; }
+    .panel-body { padding: 16px; }
+    .grid { display: grid; gap: 14px; }
+    .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .wide { grid-column: 1 / -1; }
+    .check-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+    .check-row label { display: inline-flex; grid-template-columns: none; align-items: center; gap: 8px; font-weight: 600; min-height: 38px; }
+    .check-row input { width: 18px; min-height: 18px; }
+    .total-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .metric { background: #fbfcfc; border: 1px solid var(--line); border-radius: 8px; padding: 12px; min-height: 80px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+    .metric strong { font-size: 24px; color: var(--brand-dark); }
+    .records-tools { display: grid; grid-template-columns: minmax(220px, 1fr) 170px 145px 145px 160px; gap: 10px; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px 9px; text-align: left; vertical-align: top; line-height: 1.35; }
+    th { background: #eef5f4; color: #21413d; font-weight: 700; position: sticky; top: 0; z-index: 1; }
+    .table-wrap { overflow: auto; max-height: 520px; border: 1px solid var(--line); border-radius: 8px; }
+    .status { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 8px; border-radius: 999px; font-weight: 700; white-space: nowrap; }
+    .status.draft { background: #eef2f6; color: #475467; }
+    .status.pending { background: #fff7df; color: #8a5a00; }
+    .status.approved { background: #dcfae6; color: #067647; }
+    .status.rejected { background: #fee4e2; color: #b42318; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .dash-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .bars { display: grid; gap: 10px; }
+    .bar-row { display: grid; grid-template-columns: 130px minmax(120px, 1fr) 90px; gap: 10px; align-items: center; }
+    .bar-track { height: 18px; background: #eef2f6; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--brand); border-radius: 999px; min-width: 2px; }
+    .preview { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 30px; max-width: 900px; margin: 0 auto; line-height: 1.7; box-shadow: var(--shadow); }
+    .preview h2, .preview h3 { text-align: center; margin: 0; }
+    .preview .doc-line { display: flex; justify-content: space-between; gap: 16px; }
+    .preview table th, .preview table td { border: 1px solid #cfd8df; }
+    .toast { position: fixed; right: 18px; bottom: 18px; background: #173f3a; color: #fff; border-radius: 8px; padding: 12px 14px; box-shadow: var(--shadow); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 10; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { height: auto; position: static; border-right: 0; border-bottom: 1px solid var(--line); }
+      .nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .nav button { justify-content: center; text-align: center; }
+      .cols-2, .cols-3, .cols-4, .dash-grid, .total-strip, .records-tools { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .sidebar, .topbar, .panel:not(.print-panel), .toast { display: none !important; }
+      .app { display: block; }
+      .main { padding: 0; }
+      .view { display: none !important; }
+      #previewView { display: block !important; }
+      .preview { border: 0; box-shadow: none; max-width: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>ขออนุญาตไปราชการ</strong>
+        <span>โรงพยาบาลพรหมพิราม</span>
+      </div>
+      <nav class="nav" aria-label="เมนูหลัก">
+        <button class="active" data-view="formView" type="button">แบบฟอร์ม</button>
+        <button data-view="recordsView" type="button">รายการ</button>
+        <button data-view="dashboardView" type="button">Dashboard</button>
+        <button data-view="previewView" type="button">พิมพ์/ตัวอย่าง</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1 id="pageTitle">แบบฟอร์มขออนุญาตไปราชการ</h1>
+        <div class="actions">
+          <button class="ghost" id="newBtn" type="button">รายการใหม่</button>
+          <button class="primary" id="saveBtn" type="button">บันทึก</button>
+          <button class="warning" id="blankDocxBtn" type="button">DOCX แบบฟอร์มเปล่า</button>
+          <button class="primary" id="docxBtn" type="button">ส่งออก DOCX</button>
+        </div>
+      </div>
+
+      <section class="view active" id="formView">
+        <div class="panel">
+          <div class="panel-head"><h2>ข้อมูลหนังสือ</h2><span id="editingBadge"></span></div>
+          <div class="panel-body grid cols-4">
+            <label>หน่วยงาน<input id="agency" value="โรงพยาบาลพรหมพิราม"></label>
+            <label>กลุ่มงาน<input id="dept" value="ยุทธศาสตร์"></label>
+            <label>เลขที่หนังสือ<input id="docNo" value="พล ๐๕๓๓.๓๐๑"></label>
+            <label>ส่วนต่อท้าย<input id="suffix" value="พิเศษ"></label>
+            <label>วันที่หนังสือ<input id="docDate" type="date"></label>
+            <label>เรื่อง<input id="subject" value="ขออนุญาตไปราชการ"></label>
+            <label class="wide">เรียน<input id="to" value="ผู้อำนวยการโรงพยาบาลพรหมพิราม"></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>ผู้ขออนุญาตและภารกิจ</h2></div>
+          <div class="panel-body grid cols-3">
+            <label>ชื่อผู้ขอ<input id="reqName" value="น.ส.สกาวพรรณ อวัสดาถาวร"></label>
+            <label>ตำแหน่ง<input id="reqPos" value="นักสาธารณสุขชำนาญการ"></label>
+            <label>ประเภท
+              <select id="kind">
+                <option>ประชุม</option>
+                <option>อบรม</option>
+                <option>สัมมนา</option>
+                <option>อบรม/ประชุม</option>
+                <option>นิเทศงาน</option>
+              </select>
+            </label>
+            <label class="wide">หัวข้อ/เรื่อง<textarea id="topic">ขอเชิญเข้าร่วมประชุมทบทวนแผนพัฒนาสาธารณสุขพิษณุโลก ประจำปีงบประมาณ พ.ศ.2570</textarea></label>
+            <label>ผู้จัด<input id="organizer" value="สำนักงานสาธารณสุขจังหวัดพิษณุโลก"></label>
+            <label class="wide">สถานที่<textarea id="venue">168 HEAVEN ดิ อัยยารินทร์ รีสอร์ท อำเภอเมือง จังหวัดพิษณุโลก</textarea></label>
+            <label>ตั้งแต่วันที่<input id="dateFrom" type="date"></label>
+            <label>ถึงวันที่<input id="dateTo" type="date"></label>
+            <label>รวมวัน<input id="days" readonly></label>
+            <label class="wide">วัตถุประสงค์<textarea id="purpose">เพื่อร่วมกันทบทวนสถานการณ์ ปัญหาสาธารณสุข และบูรณาการการดำเนินงานของหน่วยงาน</textarea></label>
+            <label>จำนวนผู้ร่วมเดินทาง<input id="personsCount" type="number" min="0" value="3"></label>
+            <label class="wide">รายชื่อผู้ร่วมเดินทาง<textarea id="persons">นางดวงพร ผลดีนานา; นายพิเชษฐ์ วีระกิจพานิช; นายเจริญ คลังเอี่ยม</textarea></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>ค่าใช้จ่ายและการเดินทาง</h2></div>
+          <div class="panel-body">
+            <div class="check-row">
+              <label><input id="useHosp" type="checkbox"> เบิกเงินบำรุงโรงพยาบาล</label>
+              <label><input id="useHost" type="checkbox"> ผู้จัดรับผิดชอบค่าใช้จ่าย</label>
+              <label><input id="useFare" type="checkbox"> เบิกค่าพาหนะโดยสาร</label>
+              <label><input id="useGovCar" type="checkbox"> ใช้รถราชการ</label>
+              <label><input id="useOwnCar" type="checkbox" checked> ใช้รถส่วนตัว</label>
+            </div>
+            <div class="grid cols-4" style="margin-top:14px">
+              <label>ค่าลงทะเบียน<input id="feeReg" type="number" min="0" step="1" value="0"></label>
+              <label>ค่าที่พัก<input id="feeStay" type="number" min="0" step="1" value="0"></label>
+              <label>ค่าเบี้ยเลี้ยง<input id="feeAllow" type="number" min="0" step="1" value="0"></label>
+              <label>รถประจำทาง<input id="fareBus" type="number" min="0" step="1" value="0"></label>
+              <label>รถไฟ<input id="fareTrain" type="number" min="0" step="1" value="0"></label>
+              <label>เครื่องบิน<input id="fareAir" type="number" min="0" step="1" value="0"></label>
+              <label>แท็กซี่/รับจ้าง<input id="fareTaxi" type="number" min="0" step="1" value="0"></label>
+              <label>ค่าน้ำมันรถราชการ<input id="govFuel" type="number" min="0" step="1" value="0"></label>
+              <label>ค่าทางด่วนรถราชการ<input id="govToll" type="number" min="0" step="1" value="0"></label>
+              <label>ทะเบียนรถราชการ<input id="govPlate"></label>
+              <label>พนักงานขับรถ<input id="govDriver"></label>
+              <label>ทะเบียนรถส่วนตัว<input id="ownPlate" value="ขต 2468 พิษณุโลก"></label>
+              <label>ออกจาก<input id="ownFrom" value="โรงพยาบาลพรหมพิราม"></label>
+              <label>ถึง<input id="ownTo" value="168 HEAVEN ดิ อัยยารินทร์ รีสอร์ท อำเภอเมือง จังหวัดพิษณุโลก"></label>
+              <label>ระยะทางไป-กลับ (กม.)<input id="ownKm" type="number" min="0" step="1" value="108"></label>
+              <label>อัตรา/กม.<input id="ownRate" type="number" min="0" step="0.01" value="4"></label>
+              <label>วันเดินทางไป<input id="depDate" type="date"></label>
+              <label>เวลาไป<input id="depTime" type="time" value="08:00"></label>
+              <label>วันเดินทางกลับ<input id="retDate" type="date"></label>
+              <label>เวลากลับ<input id="retTime" type="time" value="18:00"></label>
+              <label>กลับเข้าปฏิบัติงานวันที่<input id="workDate" type="date"></label>
+            </div>
+            <div class="total-strip">
+              <div class="metric"><span>เงินบำรุง รพ.</span><strong id="hospTotal">฿0</strong></div>
+              <div class="metric"><span>พาหนะโดยสาร</span><strong id="fareTotal">฿0</strong></div>
+              <div class="metric"><span>รถราชการ</span><strong id="govTotal">฿0</strong></div>
+              <div class="metric"><span>รถส่วนตัว</span><strong id="ownTotal">฿0</strong></div>
+              <div class="metric"><span>รวมทั้งสิ้น</span><strong id="grandTotal">฿0</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>การมอบหมายงานและอนุมัติ</h2></div>
+          <div class="panel-body grid cols-3">
+            <label>ผู้ปฏิบัติงานแทน<input id="delegate" value="น.ส.กัญญารัตน์ มุขแจ้ง"></label>
+            <label>เลขครั้งประชุม<input id="meetingNo" type="number" min="0" value="1"></label>
+            <label>งบประมาณคงเหลือ<input id="budgetLeft" type="number" min="0" step="1" value="15000"></label>
+            <label>งาน HR/พัฒนาบุคลากร<input id="hrSign" value="งานพัฒนาบุคลากร"></label>
+            <label>สถานะ
+              <select id="status">
+                <option value="draft">ร่าง</option>
+                <option value="pending" selected>รอพิจารณา</option>
+              </select>
+            </label>
+            <label>ผลอนุมัติ
+              <select id="decision">
+                <option value="">ยังไม่พิจารณา</option>
+                <option value="approved">อนุมัติ</option>
+                <option value="rejected">ไม่อนุมัติ</option>
+              </select>
+            </label>
+            <label class="wide">หมายเหตุผู้อำนวยการ<textarea id="directorNote"></textarea></label>
+            <label>ลงชื่อผู้อำนวยการ<input id="directorSign" placeholder="ผู้อำนวยการโรงพยาบาล"></label>
+            <label>วันที่พิจารณา<input id="directorDate" type="date"></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="recordsView">
+        <div class="panel">
+          <div class="panel-head"><h2>รายการคำขอ</h2><span id="recordCount"></span></div>
+          <div class="panel-body">
+            <div class="records-tools">
+              <input id="searchBox" placeholder="ค้นหาชื่อ หัวข้อ สถานที่ หรือสถานะ">
+              <select id="statusFilter">
+                <option value="">ทุกสถานะ</option>
+                <option value="draft">ร่าง</option>
+                <option value="pending">รอพิจารณา</option>
+                <option value="approved">อนุมัติ</option>
+                <option value="rejected">ไม่อนุมัติ</option>
+              </select>
+              <button id="exportCsvBtn" type="button">ส่งออก CSV</button>
+              <button id="importJsonBtn" type="button">นำเข้า JSON</button>
+              <button id="exportJsonBtn" type="button">สำรองข้อมูล JSON</button>
+              <input id="importJsonFile" type="file" accept="application/json,.json" hidden>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>วันที่</th>
+                    <th>ผู้ขอ</th>
+                    <th>หัวข้อ</th>
+                    <th>สถานะ</th>
+                    <th>ยอดขอเบิก</th>
+                    <th>จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="dashboardView">
+        <div class="dash-grid" id="dashMetrics"></div>
+        <div class="panel">
+          <div class="panel-head"><h2>สถานะคำขอ</h2></div>
+          <div class="panel-body bars" id="statusBars"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>ยอดค่าใช้จ่ายตามหมวด</h2></div>
+          <div class="panel-body bars" id="expenseBars"></div>
+        </div>
+      </section>
+
+      <section class="view print-panel" id="previewView">
+        <div class="panel print-panel">
+          <div class="panel-head"><h2>ตัวอย่างแบบฟอร์ม</h2><button id="printBtn" type="button">พิมพ์</button></div>
+          <div class="panel-body"><div class="preview" id="previewDoc"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "travel_permission_requests_v3";
+    const formIds = ["agency","dept","docNo","suffix","docDate","subject","to","reqName","reqPos","kind","topic","organizer","venue","dateFrom","dateTo","purpose","personsCount","persons","useHosp","useHost","useFare","useGovCar","useOwnCar","feeReg","feeStay","feeAllow","fareBus","fareTrain","fareAir","fareTaxi","govFuel","govToll","govPlate","govDriver","ownPlate","ownFrom","ownTo","ownKm","ownRate","depDate","depTime","retDate","retTime","workDate","delegate","meetingNo","budgetLeft","hrSign","status","decision","directorNote","directorSign","directorDate"];
+    const numberFields = ["feeReg","feeStay","feeAllow","fareBus","fareTrain","fareAir","fareTaxi","govFuel","govToll","ownKm","ownRate","budgetLeft","personsCount","meetingNo"];
+    let records = [];
+    let editingId = null;
+    const $ = (id) => document.getElementById(id);
+    const baht = (n) => new Intl.NumberFormat("th-TH", { style: "currency", currency: "THB", maximumFractionDigits: 0 }).format(Number(n) || 0);
+    const today = () => new Date().toISOString().slice(0, 10);
+    const sum = (...values) => values.reduce((a, b) => a + (Number(b) || 0), 0);
+
+    function newId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+      return "REQ-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+    }
+
+    function normalizeRecord(record = {}) {
+      const base = blankRecord();
+      const normalized = { ...base, ...record };
+      normalized.id = normalized.id || newId();
+      for (const id of numberFields) normalized[id] = Number(normalized[id]) || 0;
+      ["useHosp","useHost","useFare","useGovCar","useOwnCar"].forEach((id) => normalized[id] = Boolean(normalized[id]));
+      normalized.status = ["draft", "pending"].includes(normalized.status) ? normalized.status : "draft";
+      normalized.decision = ["", "approved", "rejected"].includes(normalized.decision) ? normalized.decision : "";
+      normalized.days = calcDays(normalized.dateFrom, normalized.dateTo);
+      normalized.createdAt = normalized.createdAt || new Date().toISOString();
+      normalized.updatedAt = normalized.updatedAt || normalized.createdAt;
+      return normalized;
+    }
+
+    function validateRecord(record) {
+      const checks = [
+        ["reqName", "กรุณากรอกชื่อผู้ขอ"],
+        ["topic", "กรุณากรอกหัวข้อ/เรื่อง"],
+        ["dateFrom", "กรุณากรอกวันที่เริ่ม"],
+        ["dateTo", "กรุณากรอกวันที่สิ้นสุด"]
+      ];
+      for (const [field, message] of checks) {
+        if (!String(record[field] || "").trim()) return { ok: false, field, message };
+      }
+      const from = parseDateSafe(record.dateFrom);
+      const to = parseDateSafe(record.dateTo);
+      if (from && to && to < from) return { ok: false, field: "dateTo", message: "วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่ม" };
+      return { ok: true };
+    }
+
+    function parseDateSafe(value) {
+      if (!value) return null;
+      const d = new Date(value + "T00:00:00");
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function dateThai(value) {
+      const d = parseDateSafe(value);
+      return d ? d.toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" }) : "-";
+    }
+
+    function dateShort(value) {
+      const d = parseDateSafe(value);
+      return d ? d.toLocaleDateString("th-TH", { year: "numeric", month: "2-digit", day: "2-digit" }) : "-";
+    }
+
+    function calcDays(from, to) {
+      const a = parseDateSafe(from);
+      const b = parseDateSafe(to);
+      if (!a || !b) return "";
+      return Math.max(0, Math.round((b - a) / 86400000) + 1);
+    }
+
+    function statusText(code) {
+      return ({ draft: "ร่าง", pending: "รอพิจารณา", approved: "อนุมัติ", rejected: "ไม่อนุมัติ" }[code]) || "ร่าง";
+    }
+
+    function finalStatus(record) {
+      if (record.decision === "approved") return "approved";
+      if (record.decision === "rejected") return "rejected";
+      return record.status || "draft";
+    }
+
+    function totals(record = readForm()) {
+      const hosp = record.useHosp ? sum(record.feeReg, record.feeStay, record.feeAllow) : 0;
+      const fare = record.useFare ? sum(record.fareBus, record.fareTrain, record.fareAir, record.fareTaxi) : 0;
+      const gov = record.useGovCar ? sum(record.govFuel, record.govToll) : 0;
+      const own = record.useOwnCar ? (Number(record.ownKm) || 0) * (Number(record.ownRate) || 0) : 0;
+      return { hosp, fare, gov, own, all: hosp + fare + gov + own };
+    }
+
+    function readForm() {
+      const record = {};
+      for (const id of formIds) {
+        const el = $(id);
+        if (!el) continue;
+        record[id] = el.type === "checkbox" ? el.checked : String(el.value ?? "").trim();
+      }
+      for (const id of numberFields) record[id] = Number(record[id]) || 0;
+      record.id = editingId || newId();
+      record.days = calcDays(record.dateFrom, record.dateTo);
+      record.updatedAt = new Date().toISOString();
+      record.createdAt = records.find((item) => item.id === editingId)?.createdAt || record.updatedAt;
+      return record;
+    }
+
+    function writeForm(record) {
+      for (const id of formIds) {
+        const el = $(id);
+        if (!el) continue;
+        if (el.type === "checkbox") el.checked = Boolean(record[id]);
+        else el.value = record[id] ?? "";
+      }
+      editingId = record.id || null;
+      $("editingBadge").textContent = editingId ? "กำลังแก้ไข: " + (record.reqName || record.id) : "";
+      refreshAll();
+    }
+
+    function seedDates() {
+      $("docDate").value ||= today();
+      $("dateFrom").value ||= today();
+      $("dateTo").value ||= today();
+      $("depDate").value ||= today();
+      $("retDate").value ||= today();
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      $("workDate").value ||= tomorrow.toISOString().slice(0, 10);
+    }
+
+    function resetForm() {
+      editingId = null;
+      $("editingBadge").textContent = "";
+      document.querySelectorAll("input, textarea, select").forEach((el) => {
+        if (el.id === "searchBox" || el.id === "statusFilter") return;
+        if (el.type === "checkbox") el.checked = false;
+        else if (el.tagName === "SELECT") el.selectedIndex = 0;
+        else el.value = "";
+      });
+      $("agency").value = "โรงพยาบาลพรหมพิราม";
+      $("subject").value = "ขออนุญาตไปราชการ";
+      $("to").value = "ผู้อำนวยการโรงพยาบาลพรหมพิราม";
+      $("status").value = "pending";
+      $("ownRate").value = 4;
+      seedDates();
+      refreshAll();
+    }
+
+    function saveRecords() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      } catch (err) {
+        alert("ไม่สามารถบันทึกลงเครื่องนี้ได้ กรุณาส่งออก JSON สำรองไว้ก่อนปิดหน้า");
+        throw err;
+      }
+    }
+
+    function loadRecords() {
+      try { records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+      catch { records = []; }
+      if (!Array.isArray(records)) records = [];
+      records = records.filter(Boolean).map(normalizeRecord);
+      if (!records.length) {
+        const seeded = normalizeRecord(readForm());
+        seeded.id = "REQ-" + Date.now();
+        records = [seeded];
+        saveRecords();
+      }
+    }
+
+    function saveCurrent() {
+      const record = readForm();
+      const validation = validateRecord(record);
+      if (!validation.ok) {
+        toast(validation.message);
+        $(validation.field)?.focus();
+        switchView("formView");
+        return;
+      }
+      const idx = records.findIndex((item) => item.id === record.id);
+      if (idx >= 0) records[idx] = record;
+      else records.unshift(record);
+      editingId = record.id;
+      $("editingBadge").textContent = "กำลังแก้ไข: " + (record.reqName || record.id);
+      saveRecords();
+      refreshAll();
+      toast("บันทึกข้อมูลแล้ว");
+    }
+
+    function deleteRecord(id) {
+      if (!confirm("ลบรายการนี้?")) return;
+      records = records.filter((item) => item.id !== id);
+      if (editingId === id) editingId = null;
+      saveRecords();
+      refreshAll();
+      toast("ลบรายการแล้ว");
+    }
+
+    function duplicateRecord(id) {
+      const src = records.find((item) => item.id === id);
+      if (!src) return;
+      const copy = { ...src, id: newId(), suffix: "", status: "draft", decision: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      records.unshift(copy);
+      saveRecords();
+      writeForm(copy);
+      switchView("formView");
+      toast("คัดลอกรายการแล้ว");
+    }
+
+    function editRecord(id) {
+      const record = records.find((item) => item.id === id);
+      if (!record) return;
+      writeForm(record);
+      switchView("formView");
+    }
+
+    function updateTotals() {
+      $("days").value = calcDays($("dateFrom").value, $("dateTo").value) || "";
+      const t = totals();
+      $("hospTotal").textContent = baht(t.hosp);
+      $("fareTotal").textContent = baht(t.fare);
+      $("govTotal").textContent = baht(t.gov);
+      $("ownTotal").textContent = baht(t.own);
+      $("grandTotal").textContent = baht(t.all);
+    }
+
+    function renderRecords() {
+      const query = $("searchBox").value.trim().toLowerCase();
+      const filter = $("statusFilter").value;
+      const filtered = records.filter((record) => {
+        const status = finalStatus(record);
+        const haystack = [record.reqName, record.topic, record.venue, statusText(status), record.organizer].join(" ").toLowerCase();
+        return (!filter || status === filter) && (!query || haystack.includes(query));
+      });
+      $("recordCount").textContent = filtered.length + " รายการ";
+      $("recordsTbody").innerHTML = filtered.map((record) => {
+        const status = finalStatus(record);
+        const t = totals(record);
+        return `<tr><td>${escapeHtml(dateShort(record.docDate))}</td><td>${escapeHtml(record.reqName || "-")}<br><span style="color:var(--muted)">${escapeHtml(record.reqPos || "")}</span></td><td>${escapeHtml(record.topic || "-")}<br><span style="color:var(--muted)">${escapeHtml(record.venue || "")}</span></td><td><span class="status ${status}">${statusText(status)}</span></td><td>${baht(t.all)}</td><td><div class="row-actions"><button type="button" onclick="editRecord('${record.id}')">แก้ไข</button><button type="button" onclick="downloadRecordDocx('${record.id}')">DOCX</button><button type="button" onclick="duplicateRecord('${record.id}')">คัดลอก</button><button type="button" class="danger" onclick="deleteRecord('${record.id}')">ลบ</button></div></td></tr>`;
+      }).join("") || `<tr><td colspan="6">ไม่พบข้อมูล</td></tr>`;
+    }
+
+    function renderDashboard() {
+      const byStatus = { draft: 0, pending: 0, approved: 0, rejected: 0 };
+      const expenses = { hosp: 0, fare: 0, gov: 0, own: 0 };
+      let approvedTotal = 0;
+      let allTotal = 0;
+      for (const record of records) {
+        const status = finalStatus(record);
+        byStatus[status] = (byStatus[status] || 0) + 1;
+        const t = totals(record);
+        expenses.hosp += t.hosp;
+        expenses.fare += t.fare;
+        expenses.gov += t.gov;
+        expenses.own += t.own;
+        allTotal += t.all;
+        if (status === "approved") approvedTotal += t.all;
+      }
+      $("dashMetrics").innerHTML = [["คำขอทั้งหมด", records.length], ["รอพิจารณา", byStatus.pending], ["อนุมัติ", byStatus.approved], ["ยอดอนุมัติ", baht(approvedTotal)]].map(([label, value]) => `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
+      $("statusBars").innerHTML = barRows([["ร่าง", byStatus.draft], ["รอพิจารณา", byStatus.pending], ["อนุมัติ", byStatus.approved], ["ไม่อนุมัติ", byStatus.rejected]], Math.max(records.length, 1), false);
+      $("expenseBars").innerHTML = barRows([["เงินบำรุง รพ.", expenses.hosp], ["พาหนะโดยสาร", expenses.fare], ["รถราชการ", expenses.gov], ["รถส่วนตัว", expenses.own], ["รวมทั้งหมด", allTotal]], Math.max(allTotal, 1), true);
+    }
+
+    function barRows(rows, max, isMoney) {
+      return rows.map(([label, value]) => `<div class="bar-row"><strong>${label}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.round(((Number(value) || 0) / max) * 100)}%"></div></div><span>${isMoney ? baht(value) : value}</span></div>`).join("");
+    }
+
+    function renderPreview() {
+      const r = readForm();
+      const t = totals(r);
+      $("previewDoc").innerHTML = `<h2>แบบฟอร์มการขออนุญาตไปราชการ</h2><h3>${escapeHtml(r.agency || "")}</h3><p class="doc-line"><span>ที่ ${escapeHtml(r.docNo || "")} ${escapeHtml(r.suffix || "")}</span><span>วันที่ ${dateThai(r.docDate)}</span></p><p><strong>เรื่อง</strong> ${escapeHtml(r.subject || "ขออนุญาตไปราชการ")}</p><p><strong>เรียน</strong> ${escapeHtml(r.to || "")}</p><p>ข้าพเจ้า ${escapeHtml(r.reqName || "........................................")} ตำแหน่ง ${escapeHtml(r.reqPos || "........................................")} สังกัด ${escapeHtml(r.dept || "........................................")} ขออนุญาตไปราชการเพื่อเข้าร่วม${escapeHtml(r.kind || "")}</p><p><strong>หัวข้อ/เรื่อง</strong> ${escapeHtml(r.topic || "")}</p><p><strong>ผู้จัด</strong> ${escapeHtml(r.organizer || "")} <strong>สถานที่</strong> ${escapeHtml(r.venue || "")}</p><p><strong>ระยะเวลา</strong> ตั้งแต่ ${dateThai(r.dateFrom)} ถึง ${dateThai(r.dateTo)} รวม ${r.days || "-"} วัน</p><p><strong>วัตถุประสงค์</strong> ${escapeHtml(r.purpose || "")}</p><p><strong>ผู้ร่วมเดินทาง</strong> ${escapeHtml(r.persons || "-")}</p><table><thead><tr><th>หมวด</th><th>รายละเอียด</th><th>จำนวนเงิน</th></tr></thead><tbody><tr><td>เงินบำรุงโรงพยาบาล</td><td>ลงทะเบียน ${baht(r.feeReg)}, ที่พัก ${baht(r.feeStay)}, เบี้ยเลี้ยง ${baht(r.feeAllow)}</td><td>${baht(t.hosp)}</td></tr><tr><td>พาหนะโดยสาร</td><td>รถโดยสาร ${baht(r.fareBus)}, รถไฟ ${baht(r.fareTrain)}, เครื่องบิน ${baht(r.fareAir)}, รับจ้าง ${baht(r.fareTaxi)}</td><td>${baht(t.fare)}</td></tr><tr><td>รถราชการ</td><td>${escapeHtml(r.govPlate || "-")} พนักงานขับรถ ${escapeHtml(r.govDriver || "-")}</td><td>${baht(t.gov)}</td></tr><tr><td>รถส่วนตัว</td><td>${escapeHtml(r.ownPlate || "-")} ${escapeHtml(r.ownFrom || "")} - ${escapeHtml(r.ownTo || "")} ${r.ownKm || 0} กม. x ${r.ownRate || 0} บาท</td><td>${baht(t.own)}</td></tr><tr><th colspan="2">รวมทั้งสิ้น</th><th>${baht(t.all)}</th></tr></tbody></table><p><strong>มอบหมายงานแทน</strong> ${escapeHtml(r.delegate || "........................................")}</p><p style="text-align:right;margin-top:42px">ลงชื่อ ................................................ ผู้ขออนุญาต<br>(${escapeHtml(r.reqName || "........................................")})</p><p style="text-align:right;margin-top:42px">ลงชื่อ ................................................ ผู้อนุมัติ<br>(${escapeHtml(r.directorSign || "ผู้อำนวยการโรงพยาบาล")})</p>`;
+    }
+
+    function refreshAll() {
+      updateTotals();
+      renderRecords();
+      renderDashboard();
+      renderPreview();
+    }
+
+    function switchView(id) {
+      document.querySelectorAll(".view").forEach((el) => el.classList.toggle("active", el.id === id));
+      document.querySelectorAll(".nav button").forEach((btn) => btn.classList.toggle("active", btn.dataset.view === id));
+      $("pageTitle").textContent = ({ formView: "แบบฟอร์มขออนุญาตไปราชการ", recordsView: "รายการคำขอ", dashboardView: "Dashboard", previewView: "พิมพ์/ตัวอย่าง" }[id]) || "แบบฟอร์มขออนุญาตไปราชการ";
+      refreshAll();
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m]));
+    }
+
+    function toast(message) {
+      $("toast").textContent = message;
+      $("toast").classList.add("show");
+      setTimeout(() => $("toast").classList.remove("show"), 2200);
+    }
+
+    function exportJson() {
+      downloadBlob(new Blob([JSON.stringify(records, null, 2)], { type: "application/json;charset=utf-8" }), "travel-permission-records.json");
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    }
+
+    function exportCsv() {
+      const headers = ["ID","วันที่หนังสือ","ผู้ขอ","ตำแหน่ง","ประเภท","หัวข้อ","ผู้จัด","สถานที่","วันที่เริ่ม","วันที่สิ้นสุด","จำนวนวัน","สถานะ","ยอดเงินบำรุง","ยอดพาหนะ","ยอดรถราชการ","ยอดรถส่วนตัว","ยอดรวม"];
+      const rows = records.map((record) => {
+        const t = totals(record);
+        return [record.id, record.docDate, record.reqName, record.reqPos, record.kind, record.topic, record.organizer, record.venue, record.dateFrom, record.dateTo, record.days || calcDays(record.dateFrom, record.dateTo), statusText(finalStatus(record)), t.hosp, t.fare, t.gov, t.own, t.all];
+      });
+      const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+      downloadBlob(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }), "travel-permission-records.csv");
+    }
+
+    function importJson() {
+      $("importJsonFile").click();
+    }
+
+    function handleImportJson(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(String(reader.result || "[]"));
+          if (!Array.isArray(imported)) throw new Error("JSON ต้องเป็นรายการข้อมูล");
+          records = imported.filter(Boolean).map(normalizeRecord);
+          saveRecords();
+          if (records[0]) writeForm(records[0]);
+          renderRecords();
+          renderDashboard();
+          switchView("recordsView");
+          toast("นำเข้าข้อมูลแล้ว " + records.length + " รายการ");
+        } catch (err) {
+          alert("นำเข้า JSON ไม่สำเร็จ: " + err.message);
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    function downloadCurrentDocx() {
+      const record = readForm();
+      const validation = validateRecord(record);
+      if (!validation.ok) {
+        toast(validation.message);
+        $(validation.field)?.focus();
+        switchView("formView");
+        return;
+      }
+      downloadDocx(record, "แบบฟอร์มขออนุญาตไปราชการ-" + (record.reqName || "รายการ") + ".docx");
+    }
+
+    function downloadBlankDocx() {
+      downloadDocx(blankRecord(), "แบบฟอร์มขออนุญาตไปราชการ-เปล่า.docx");
+    }
+
+    function downloadRecordDocx(id) {
+      const record = records.find((item) => item.id === id);
+      if (record) downloadDocx(record, "แบบฟอร์มขออนุญาตไปราชการ-" + (record.reqName || record.id) + ".docx");
+    }
+
+    function blankRecord() {
+      return { agency: "โรงพยาบาลพรหมพิราม", dept: "", docNo: "", suffix: "", docDate: "", subject: "ขออนุญาตไปราชการ", to: "ผู้อำนวยการโรงพยาบาลพรหมพิราม", reqName: "", reqPos: "", kind: "", topic: "", organizer: "", venue: "", dateFrom: "", dateTo: "", days: "", purpose: "", personsCount: "", persons: "", useHosp: false, useHost: false, useFare: false, useGovCar: false, useOwnCar: false, feeReg: 0, feeStay: 0, feeAllow: 0, fareBus: 0, fareTrain: 0, fareAir: 0, fareTaxi: 0, govFuel: 0, govToll: 0, govPlate: "", govDriver: "", ownPlate: "", ownFrom: "", ownTo: "", ownKm: 0, ownRate: 4, depDate: "", depTime: "", retDate: "", retTime: "", workDate: "", delegate: "", meetingNo: "", budgetLeft: 0, hrSign: "", status: "draft", decision: "", directorNote: "", directorSign: "", directorDate: "" };
+    }
+
+    function downloadDocx(record, filename) {
+      const files = createDocxFiles(record);
+      const zip = buildZip(files);
+      downloadBlob(new Blob([zip], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }), sanitizeFileName(filename));
+      toast("สร้างไฟล์ DOCX แล้ว");
+    }
+
+    function sanitizeFileName(name) {
+      return name.replace(/[\\/:*?"<>|]+/g, "-");
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function xml(text) {
+      return String(text ?? "").replace(/[<>&'"]/g, (m) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[m]));
+    }
+
+    function lines(text) {
+      return String(text || "").split(/\r?\n/).map((part, index) => `${index ? "<w:br/>" : ""}<w:t xml:space="preserve">${xml(part)}</w:t>`).join("");
+    }
+
+    function p(text, opts = {}) {
+      const jc = opts.center ? '<w:jc w:val="center"/>' : opts.right ? '<w:jc w:val="right"/>' : "";
+      const size = opts.size || 32;
+      const bold = opts.bold ? "<w:b/>" : "";
+      return `<w:p><w:pPr>${jc}<w:spacing w:before="${opts.before ?? 0}" w:after="${opts.after ?? 120}" w:line="${opts.line ?? 300}" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="${size}"/><w:szCs w:val="${size}"/>${bold}</w:rPr>${lines(text)}</w:r></w:p>`;
+    }
+
+    function field(value, width = 28) {
+      const v = String(value || "").trim();
+      return v || ".".repeat(width);
+    }
+
+    function check(value) {
+      return value ? "☑" : "☐";
+    }
+
+    function table(rows, widths) {
+      const grid = widths.map((w) => `<w:gridCol w:w="${w}"/>`).join("");
+      return `<w:tbl><w:tblPr><w:tblW w:w="9360" w:type="dxa"/><w:tblBorders><w:top w:val="single" w:sz="4" w:color="B8C4CC"/><w:left w:val="single" w:sz="4" w:color="B8C4CC"/><w:bottom w:val="single" w:sz="4" w:color="B8C4CC"/><w:right w:val="single" w:sz="4" w:color="B8C4CC"/><w:insideH w:val="single" w:sz="4" w:color="B8C4CC"/><w:insideV w:val="single" w:sz="4" w:color="B8C4CC"/></w:tblBorders><w:tblCellMar><w:top w:w="90" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:bottom w:w="90" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${grid}</w:tblGrid>${rows.map((row) => `<w:tr>${row.map((cell, i) => tc(cell, widths[i], row.header)).join("")}</w:tr>`).join("")}</w:tbl>`;
+    }
+
+    function tc(text, width, header = false) {
+      const fill = header ? '<w:shd w:fill="EEF5F4"/>' : "";
+      const bold = header ? "<w:b/>" : "";
+      return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/>${fill}<w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:after="60" w:line="300" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="30"/><w:szCs w:val="30"/>${bold}</w:rPr>${lines(text)}</w:r></w:p></w:tc>`;
+    }
+
+    function createDocxFiles(record) {
+      const t = totals(record);
+      const expenseRows = [["หมวดค่าใช้จ่าย", "รายละเอียด", "จำนวนเงิน"], ["เงินบำรุงโรงพยาบาล", `${check(record.useHosp)} ค่าลงทะเบียน ${baht(record.feeReg)} / ค่าที่พัก ${baht(record.feeStay)} / ค่าเบี้ยเลี้ยง ${baht(record.feeAllow)}`, baht(t.hosp)], ["ผู้จัดรับผิดชอบ", `${check(record.useHost)} ผู้จัดรับผิดชอบค่าใช้จ่าย`, "-"], ["ค่าพาหนะโดยสาร", `${check(record.useFare)} รถโดยสาร ${baht(record.fareBus)} / รถไฟ ${baht(record.fareTrain)} / เครื่องบิน ${baht(record.fareAir)} / รับจ้าง ${baht(record.fareTaxi)}`, baht(t.fare)], ["รถราชการ", `${check(record.useGovCar)} ทะเบียน ${field(record.govPlate, 18)} พนักงานขับรถ ${field(record.govDriver, 18)}`, baht(t.gov)], ["รถส่วนตัว", `${check(record.useOwnCar)} ทะเบียน ${field(record.ownPlate, 18)} จาก ${field(record.ownFrom, 18)} ถึง ${field(record.ownTo, 18)} ${record.ownKm || 0} กม. x ${record.ownRate || 0} บาท`, baht(t.own)], ["รวมทั้งสิ้น", "", baht(t.all)]].map((row, index) => Object.assign(row, { header: index === 0 || index === 6 }));
+      const body = [p("แบบฟอร์มการขออนุญาตไปราชการ", { center: true, bold: true, size: 40, after: 40 }), p(record.agency || "โรงพยาบาลพรหมพิราม", { center: true, bold: true, size: 32, after: 180 }), p(`ที่ ${field(record.docNo, 22)} ${field(record.suffix, 10)}                                                        วันที่ ${dateThai(record.docDate)}`), p(`เรื่อง ${record.subject || "ขออนุญาตไปราชการ"}`), p(`เรียน ${record.to || "ผู้อำนวยการโรงพยาบาลพรหมพิราม"}`), p(`ข้าพเจ้า ${field(record.reqName, 32)} ตำแหน่ง ${field(record.reqPos, 32)} สังกัด ${field(record.dept, 24)} ขออนุญาตไปราชการเพื่อเข้าร่วม${field(record.kind, 12)}`), p(`หัวข้อ/เรื่อง ${field(record.topic, 70)}`), p(`จัดโดย ${field(record.organizer, 34)} ณ ${field(record.venue, 54)}`), p(`ระหว่างวันที่ ${dateThai(record.dateFrom)} ถึงวันที่ ${dateThai(record.dateTo)} รวม ${record.days || calcDays(record.dateFrom, record.dateTo) || "....."} วัน`), p(`วัตถุประสงค์ ${field(record.purpose, 76)}`), p(`ผู้ร่วมเดินทาง ${field(record.persons, 70)} จำนวน ${field(record.personsCount, 6)} คน`), p("รายละเอียดค่าใช้จ่าย", { bold: true, before: 80 }), table(expenseRows, [2100, 5460, 1800]), p(`การเดินทาง: ไปวันที่ ${dateThai(record.depDate)} เวลา ${field(record.depTime, 8)} กลับวันที่ ${dateThai(record.retDate)} เวลา ${field(record.retTime, 8)} กลับเข้าปฏิบัติงานวันที่ ${dateThai(record.workDate)}`, { before: 120 }), p(`มอบหมายให้ ${field(record.delegate, 32)} ปฏิบัติงานแทนระหว่างไปราชการ`), p(`ความเห็น/หมายเหตุผู้อนุมัติ ${field(record.directorNote, 70)}`), p("จึงเรียนมาเพื่อโปรดพิจารณาอนุญาต", { before: 120 }), p(`ลงชื่อ ................................................ ผู้ขออนุญาต\n(${field(record.reqName, 32)})`, { right: true, before: 260 }), p(`ลงชื่อ ................................................ ผู้บังคับบัญชา/ผู้อนุมัติ\n(${field(record.directorSign || "ผู้อำนวยการโรงพยาบาล", 32)})\nวันที่ ${dateThai(record.directorDate)}`, { right: true, before: 200 })].join("");
+      const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+      return { "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`, "_rels/.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`, "word/_rels/document.xml.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/></Relationships>`, "word/document.xml": documentXml, "word/styles.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="120" w:line="300" w:lineRule="auto"/></w:pPr><w:rPr><w:rFonts w:ascii="TH Sarabun New" w:hAnsi="TH Sarabun New" w:eastAsia="TH Sarabun New" w:cs="TH Sarabun New"/><w:sz w:val="32"/><w:szCs w:val="32"/></w:rPr></w:style></w:styles>`, "word/settings.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:displayBackgroundShape/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat></w:settings>`, "docProps/core.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>แบบฟอร์มการขออนุญาตไปราชการ</dc:title><dc:creator>Codex</dc:creator><cp:lastModifiedBy>Codex</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:modified></cp:coreProperties>`, "docProps/app.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Word</Application></Properties>` };
+    }
+
+    const utf8 = (str) => new TextEncoder().encode(str);
+    const crcTable = (() => { const table = new Uint32Array(256); for (let i = 0; i < 256; i++) { let c = i; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; table[i] = c >>> 0; } return table; })();
+    function crc32(bytes) { let c = 0xffffffff; for (const b of bytes) c = crcTable[(c ^ b) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+    function writeU16(arr, value) { arr.push(value & 255, (value >>> 8) & 255); }
+    function writeU32(arr, value) { arr.push(value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255); }
+    function dosTimeDate() { const d = new Date(); return { time: (d.getHours() << 11) | (d.getMinutes() << 5) | Math.floor(d.getSeconds() / 2), date: ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate() }; }
+    function buildZip(files) {
+      const out = [];
+      const central = [];
+      let offset = 0;
+      const stamp = dosTimeDate();
+      for (const [name, content] of Object.entries(files)) {
+        const nameBytes = utf8(name);
+        const data = utf8(content);
+        const crc = crc32(data);
+        const local = [];
+        writeU32(local, 0x04034b50); writeU16(local, 20); writeU16(local, 0x0800); writeU16(local, 0); writeU16(local, stamp.time); writeU16(local, stamp.date); writeU32(local, crc); writeU32(local, data.length); writeU32(local, data.length); writeU16(local, nameBytes.length); writeU16(local, 0); local.push(...nameBytes, ...data);
+        out.push(...local);
+        const dir = [];
+        writeU32(dir, 0x02014b50); writeU16(dir, 20); writeU16(dir, 20); writeU16(dir, 0x0800); writeU16(dir, 0); writeU16(dir, stamp.time); writeU16(dir, stamp.date); writeU32(dir, crc); writeU32(dir, data.length); writeU32(dir, data.length); writeU16(dir, nameBytes.length); writeU16(dir, 0); writeU16(dir, 0); writeU16(dir, 0); writeU16(dir, 0); writeU32(dir, 0); writeU32(dir, offset); dir.push(...nameBytes);
+        central.push(...dir);
+        offset += local.length;
+      }
+      const centralOffset = out.length;
+      out.push(...central);
+      writeU32(out, 0x06054b50); writeU16(out, 0); writeU16(out, 0); writeU16(out, Object.keys(files).length); writeU16(out, Object.keys(files).length); writeU32(out, central.length); writeU32(out, centralOffset); writeU16(out, 0);
+      return new Uint8Array(out);
+    }
+
+    document.querySelectorAll(".nav button").forEach((btn) => btn.addEventListener("click", () => switchView(btn.dataset.view)));
+    $("saveBtn").addEventListener("click", saveCurrent);
+    $("newBtn").addEventListener("click", () => { resetForm(); switchView("formView"); toast("เริ่มรายการใหม่"); });
+    $("docxBtn").addEventListener("click", downloadCurrentDocx);
+    $("blankDocxBtn").addEventListener("click", downloadBlankDocx);
+    $("printBtn").addEventListener("click", () => window.print());
+    $("exportJsonBtn").addEventListener("click", exportJson);
+    $("exportCsvBtn").addEventListener("click", exportCsv);
+    $("importJsonBtn").addEventListener("click", importJson);
+    $("importJsonFile").addEventListener("change", handleImportJson);
+    $("searchBox").addEventListener("input", renderRecords);
+    $("statusFilter").addEventListener("change", renderRecords);
+    formIds.forEach((id) => { const el = $(id); if (el) { el.addEventListener("input", refreshAll); el.addEventListener("change", refreshAll); } });
+    seedDates();
+    loadRecords();
+    if (records[0]) writeForm(records[0]);
+    else refreshAll();
+  </script>
+</body>
+</html>
